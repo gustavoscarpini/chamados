@@ -1,0 +1,10 @@
+{
+    "chamadosApp": {
+        "TipoChamado" : {
+            "null": "",
+            "SUPORTE": "SUPORTE",
+            "BUG": "BUG",
+            "MELHORIA": "MELHORIA"
+        }
+    }
+}

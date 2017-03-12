@@ -1,0 +1,185 @@
+<div ng-cloak>
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Bem vindo!</h1>
+            <p class="lead">estes são os seus Chamados</p>
+
+            <div ng-switch="vm.isAuthenticated()">
+                <div class="alert alert-success" ng-switch-when="true">
+                    Você entrou com o usuário "{{vm.account.login}}".
+                </div>
+
+                <div class="container" ng-switch-when="true">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <div class="hero-widget">
+                                <div class="icon col-md-3 no-padding">
+                                    <i class="glyphicon glyphicon-calendar"></i>
+                                </div>
+                                <div class="text col-md-9 no-padding">
+                                    <var>3</var>
+                                    <label class="text-muted">Vencidos</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="hero-widget">
+                                <div class="icon col-md-3 no-padding">
+                                    <i class="glyphicon glyphicon-hourglass"></i>
+                                </div>
+                                <div class="text col-md-9 no-padding">
+                                    <var>614</var>
+                                    <label class="text-muted">Vencendo Hoje</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="hero-widget">
+                                <div class="icon col-md-3 no-padding">
+                                    <i class="glyphicon glyphicon-bell"></i>
+                                </div>
+                                <div class="text col-md-9 no-padding">
+                                    <var>73</var>
+                                    <label class="text-muted">Abertos</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="hero-widget">
+                                <div class="icon col-md-3 no-padding">
+                                    <i class="glyphicon glyphicon-time"></i>
+                                </div>
+                                <div class="text col-md-9 no-padding">
+                                    <var>75%</var>
+                                    <label class="text-muted">Aguardando Definição</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="hero-widget">
+                                <div class="icon col-md-3 no-padding">
+                                    <i class="glyphicon glyphicon-console"></i>
+                                </div>
+                                <div class="text col-md-9 no-padding">
+                                    <var>75%</var>
+                                    <label class="text-muted">Em Desenvolvimento</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="hero-widget">
+                                <div class="icon col-md-3 no-padding">
+                                    <i class="glyphicon glyphicon-user"></i>
+                                </div>
+                                <div class="text col-md-9 no-padding">
+                                    <var>75%</var>
+                                    <label class="text-muted">A Testar</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-warning" ng-switch-when="false"
+                     data-translate="global.messages.info.authenticated" translate-compile>
+                    If you want to <a class="alert-link" href="" ng-click="vm.login()">sign in</a>, you can try the
+                    default accounts:<br/>- Administrator (login="admin" and password="admin") <br/>- User (login="user"
+                    and password="user").
+                </div>
+
+                <div class="alert alert-warning" ng-switch-when="false" data-translate="global.messages.info.register"
+                     translate-compile>
+                    You don't have an account yet? <a class="alert-link" ui-sref="register">Register a new account</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h2 data-translate="chamadosApp.chamado.home.title">Chamados</h2>
+            <jhi-alert></jhi-alert>
+
+            <button ui-sref="chamado.new" class="btn btn-primary">
+                <span class="glyphicon glyphicon-plus"></span>
+                <span class="hidden-sm">Novo Chamado</span>
+            </button>
+            <br/>
+            <div class="col-md-12">
+
+                <div class="table-responsive">
+                    <table class="jh-table table table-striped">
+                        <thead>
+                        <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                            <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span
+                                class="glyphicon glyphicon-sort"></span></th>
+                            <th jh-sort-by="titulo"><span data-translate="chamadosApp.chamado.titulo">Titulo</span>
+                                <span
+                                    class="glyphicon glyphicon-sort"></span></th>
+                            <th jh-sort-by="conteudo"><span
+                                data-translate="chamadosApp.chamado.conteudo">Conteudo</span>
+                                <span
+                                    class="glyphicon glyphicon-sort"></span></th>
+                            <th jh-sort-by="tipoChamado"><span
+                                data-translate="chamadosApp.chamado.tipoChamado">Tipo Chamado</span> <span
+                                class="glyphicon glyphicon-sort"></span></th>
+                            <th jh-sort-by="criadoEm"><span
+                                data-translate="chamadosApp.chamado.criadoEm">Criado Em</span>
+                                <span
+                                    class="glyphicon glyphicon-sort"></span></th>
+                            <th jh-sort-by="prazo"><span data-translate="chamadosApp.chamado.prazo">Prazo</span> <span
+                                class="glyphicon glyphicon-sort"></span></th>
+                            <th jh-sort-by="ordem"><span data-translate="chamadosApp.chamado.ordem">Ordem</span> <span
+                                class="glyphicon glyphicon-sort"></span></th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="chamado in vm.chamados track by chamado.id">
+                            <td><a ui-sref="chamado-detail({id:chamado.id})">{{chamado.id}}</a></td>
+                            <td>{{chamado.titulo}}</td>
+                            <td>{{chamado.conteudo}}</td>
+                            <td data-translate="{{'chamadosApp.TipoChamado.' + chamado.tipoChamado}}">
+                                {{chamado.tipoChamado}}
+                            </td>
+                            <td>{{chamado.criadoEm | date:'mediumDate'}}</td>
+                            <td>{{chamado.prazo | date:'mediumDate'}}</td>
+                            <td>{{chamado.ordem}}</td>
+                            <td class="text-right">
+                                <div class="btn-group flex-btn-group-container">
+                                    <button type="submit"
+                                            ui-sref="chamado-detail({id:chamado.id})"
+                                            class="btn btn-info btn-sm">
+                                        <span class="glyphicon glyphicon-eye-open"></span>
+                                        <span class="hidden-sm-down" data-translate="entity.action.view"></span>
+                                    </button>
+                                    <button type="submit"
+                                            ui-sref="chamado.edit({id:chamado.id})"
+                                            class="btn btn-primary btn-sm">
+                                        <span class="glyphicon glyphicon-pencil"></span>
+                                        <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
+                                    </button>
+                                    <button type="submit"
+                                            ui-sref="chamado.delete({id:chamado.id})"
+                                            class="btn btn-danger btn-sm">
+                                        <span class="glyphicon glyphicon-remove-circle"></span>
+                                        <span class="hidden-sm-down" data-translate="entity.action.delete"></span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-center">
+                    <jhi-item-count page="vm.page" total="vm.queryCount"
+                                    items-per-page="vm.itemsPerPage"></jhi-item-count>
+                    <uib-pagination class="pagination-sm" total-items="vm.totalItems" items-per-page="vm.itemsPerPage"
+                                    ng-model="vm.page" ng-change="vm.transition()"></uib-pagination>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

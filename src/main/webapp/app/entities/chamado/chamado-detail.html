@@ -1,0 +1,55 @@
+
+<div>
+    <h2><span data-translate="chamadosApp.chamado.detail.title">Chamado</span> {{vm.chamado.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="chamadosApp.chamado.titulo">Titulo</span></dt>
+        <dd>
+            <span>{{vm.chamado.titulo}}</span>
+        </dd>
+        <dt><span data-translate="chamadosApp.chamado.conteudo">Conteudo</span></dt>
+        <dd>
+            <span>{{vm.chamado.conteudo}}</span>
+        </dd>
+        <dt><span data-translate="chamadosApp.chamado.tipoChamado">Tipo Chamado</span></dt>
+        <dd>
+            <span data-translate="{{'chamadosApp.TipoChamado.' + vm.chamado.tipoChamado}}">{{vm.chamado.tipoChamado}}</span>
+        </dd>
+        <dt><span data-translate="chamadosApp.chamado.criadoEm">Criado Em</span></dt>
+        <dd>
+            <span>{{vm.chamado.criadoEm | date:'mediumDate'}}</span>
+        </dd>
+        <dt><span data-translate="chamadosApp.chamado.prazo">Prazo</span></dt>
+        <dd>
+            <span>{{vm.chamado.prazo | date:'mediumDate'}}</span>
+        </dd>
+        <dt><span data-translate="chamadosApp.chamado.ordem">Ordem</span></dt>
+        <dd>
+            <span>{{vm.chamado.ordem}}</span>
+        </dd>
+        <dt><span data-translate="chamadosApp.chamado.solicitante">Solicitante</span></dt>
+        <dd>
+            {{vm.chamado.solicitante.login}}
+        </dd>
+        <dt><span data-translate="chamadosApp.chamado.responsavel">Responsavel</span></dt>
+        <dd>
+            {{vm.chamado.responsavel.login}}
+        </dd>
+        <dt><span data-translate="chamadosApp.chamado.cliente">Cliente</span></dt>
+        <dd>
+            <a ui-sref="cliente-detail({id:vm.chamado.cliente.id})">{{vm.chamado.cliente.nome}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="chamado-detail.edit({id:vm.chamado.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

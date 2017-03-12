@@ -1,0 +1,30 @@
+{
+    "chamadosApp": {
+        "chamado" : {
+            "home": {
+                "title": "Chamados",
+                "createLabel": "Criar um(a) novo(a) Chamado",
+                "createOrEditLabel": "Criar ou editar um(a) Chamado",
+                "search": "Search for Chamado"
+            },
+            "created": "A new Chamado is created with identifier {{ param }}",
+            "updated": "A Chamado is updated with identifier {{ param }}",
+            "deleted": "A Chamado is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Tem a certeza que pretende eliminar o(a) Chamado {{ id }}?"
+            },
+            "detail": {
+                "title": "Chamado"
+            },
+            "titulo": "Titulo",
+            "conteudo": "Conteudo",
+            "tipoChamado": "Tipo Chamado",
+            "criadoEm": "Criado Em",
+            "prazo": "Prazo",
+            "ordem": "Ordem",
+            "solicitante": "Solicitante",
+            "responsavel": "Responsavel",
+            "cliente": "Cliente"
+        }
+    }
+}
