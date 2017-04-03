@@ -1,0 +1,23 @@
+{
+    "chamadosApp": {
+        "modulo" : {
+            "home": {
+                "title": "Modulos",
+                "createLabel": "Criar um(a) novo(a) Modulo",
+                "createOrEditLabel": "Criar ou editar um(a) Modulo",
+                "search": "Search for Modulo"
+            },
+            "created": "A new Modulo is created with identifier {{ param }}",
+            "updated": "A Modulo is updated with identifier {{ param }}",
+            "deleted": "A Modulo is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Tem a certeza que pretende eliminar o(a) Modulo {{ id }}?"
+            },
+            "detail": {
+                "title": "Modulo"
+            },
+            "descricao": "Descricao",
+            "usuarios": "Usuarios"
+        }
+    }
+}

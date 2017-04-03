@@ -4,5 +4,5 @@ package com.chamados.domain.enumeration;
  * The TipoChamado enumeration.
  */
 public enum TipoChamado {
-    SUPORTE, BUG, MELHORIA
+    SUPORTE, BUG, MELHORIA, NOVA_FUNCIONALIDADE
 }

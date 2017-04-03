@@ -1,11 +1,10 @@
 package com.chamados.web.rest;
 
 import com.chamados.ChamadosApp;
-
 import com.chamados.domain.Chamado;
+import com.chamados.domain.enumeration.TipoChamado;
 import com.chamados.repository.ChamadoRepository;
 import com.chamados.service.ChamadoService;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,8 +28,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import com.chamados.domain.enumeration.TipoChamado;
 /**
  * Test class for the ChamadoResource REST controller.
  *
@@ -80,7 +77,7 @@ public class ChamadoResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        ChamadoResource chamadoResource = new ChamadoResource(chamadoService);
+        ChamadoResource chamadoResource = new ChamadoResource(chamadoService, null);
         this.restChamadoMockMvc = MockMvcBuilders.standaloneSetup(chamadoResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setMessageConverters(jacksonMessageConverter).build();

@@ -9,10 +9,63 @@
     function Chamado ($resource, DateUtils) {
         var resourceUrl =  'api/chamados/:id';
 
+        function covertData(data) {
+            if (data) {
+                data = angular.fromJson(data);
+                data.criadoEm = DateUtils.convertLocalDateFromServer(data.criadoEm);
+                data.prazo = DateUtils.convertLocalDateFromServer(data.prazo);
+            }
+            return data;
+        }
+
         return $resource(resourceUrl, {}, {
             'query': { method: 'GET', isArray: true},
+            'solicitarDesenvolvimento': {
+                method: 'POST',
+                url:'api/soliciar-desenvolvimento',
+                transformRequest: function (data) {
+                    var copy = angular.copy(data);
+                    copy.criadoEm = DateUtils.convertLocalDateToServer(copy.criadoEm);
+                    copy.prazo = DateUtils.convertLocalDateToServer(copy.prazo);
+                    return angular.toJson(copy);
+                }
+            },
+            'getSituacoes': {
+                method: 'GET',
+                url:'api/situacoes',
+                isArray: true
+            },
+            'queryBySituacao': {
+                method: 'GET',
+                url:'api/chamados-by-situacao/:situacao',
+                isArray: true
+            },
+            'getSolicitacoes': {
+                method: 'GET',
+                url:'api/solicitacoes/:id',
+                isArray: true
+            },
             'get': {
                 method: 'GET',
+                transformResponse: function (data) {
+                    return covertData(data);
+                }
+            },
+            'criar': {
+                method: 'GET',
+                url:'api/chamados-criar',
+                transformResponse: function (data) {
+                    if (data) {
+                        data = angular.fromJson(data);
+                        data.criadoEm = DateUtils.convertLocalDateFromServer(data.criadoEm);
+                        data.prazo = DateUtils.convertLocalDateFromServer(data.prazo);
+                    }
+                    return data;
+                }
+            },
+            'aceitar': {
+                method: 'POST',
+                url:'api/chamados-aceitar',
                 transformResponse: function (data) {
                     if (data) {
                         data = angular.fromJson(data);

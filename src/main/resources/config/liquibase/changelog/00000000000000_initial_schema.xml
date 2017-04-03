@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <databaseChangeLog
     xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
-                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
     <property name="now" value="now()" dbms="h2"/>
     <property name="now" value="current_timestamp" dbms="postgresql"/>
@@ -198,6 +196,16 @@
         <addUniqueConstraint tableName="jhi_social_user_connection" columnNames="user_id, provider_id, provider_user_id"/>
 
         <addUniqueConstraint tableName="jhi_social_user_connection" columnNames="user_id, provider_id, rank"/>
+    </changeSet>
+    <changeSet id="addAuthorityCliente" author="scarpini">
+        <insert tableName="jhi_authority">
+            <column name="name">ROLE_CLIENTE</column>
+        </insert>
+    </changeSet>
+    <changeSet id="addAuthorityAtendente" author="scarpini">
+        <insert tableName="jhi_authority">
+            <column name="name">ROLE_ATENDENTE</column>
+        </insert>
     </changeSet>
 
 </databaseChangeLog>

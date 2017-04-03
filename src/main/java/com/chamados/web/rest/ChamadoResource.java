@@ -1,12 +1,17 @@
 package com.chamados.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
 import com.chamados.domain.Chamado;
+import com.chamados.domain.SolicitacaoDesenvolvimento;
+import com.chamados.domain.enumeration.SituacaoChamado;
 import com.chamados.service.ChamadoService;
+import com.chamados.service.UserService;
 import com.chamados.web.rest.util.HeaderUtil;
 import com.chamados.web.rest.util.PaginationUtil;
-import io.swagger.annotations.ApiParam;
+import com.codahale.metrics.annotation.Timed;
+import com.google.common.collect.Lists;
+import com.taskadapter.redmineapi.RedmineException;
 import io.github.jhipster.web.util.ResponseUtil;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -19,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,11 +38,13 @@ public class ChamadoResource {
     private final Logger log = LoggerFactory.getLogger(ChamadoResource.class);
 
     private static final String ENTITY_NAME = "chamado";
-        
-    private final ChamadoService chamadoService;
 
-    public ChamadoResource(ChamadoService chamadoService) {
+    private final ChamadoService chamadoService;
+    private final UserService userService;
+
+    public ChamadoResource(ChamadoService chamadoService, UserService userService) {
         this.chamadoService = chamadoService;
+        this.userService = userService;
     }
 
     /**
@@ -53,6 +61,18 @@ public class ChamadoResource {
         if (chamado.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new chamado cannot already have an ID")).body(null);
         }
+        Chamado result = chamadoService.save(chamado);
+        return ResponseEntity.created(new URI("/api/chamados/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
+
+    @PostMapping("/chamados-aceitar")
+    @Timed
+    public ResponseEntity<Chamado> aceitarChamado(@Valid @RequestBody Chamado chamado) throws URISyntaxException {
+        log.debug("REST request to aceitar Chamado : {}", chamado);
+        chamado.setResponsavel(userService.getUserWithAuthorities());
+        chamado.setSituacao(SituacaoChamado.SUPORTE);
         Chamado result = chamadoService.save(chamado);
         return ResponseEntity.created(new URI("/api/chamados/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
@@ -98,6 +118,41 @@ public class ChamadoResource {
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
+    @GetMapping("/chamados-by-situacao/{situacao}")
+    @Timed
+    public ResponseEntity<List<Chamado>> getAllChamados(@ApiParam Pageable pageable,
+                                                        @PathVariable SituacaoChamado situacao)
+        throws URISyntaxException {
+        log.debug("REST request to get a page of Chamados");
+        Page<Chamado> page = chamadoService.findAllBySituacao(pageable, situacao);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/chamados");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+
+    @GetMapping("/situacoes")
+    @Timed
+    public ResponseEntity<List<SituacaoChamado>> getAllSituacoes()
+        throws URISyntaxException {
+        log.debug("REST request to get a page of Chamados");
+        return new ResponseEntity<>(Lists.newArrayList(SituacaoChamado.values()), HttpStatus.OK);
+    }
+
+
+    @GetMapping("/solicitacoes/{id}")
+    @Timed
+    public ResponseEntity<List<SolicitacaoDesenvolvimento>> getAllSolicitacoes(@PathVariable Long id) {
+        List<SolicitacaoDesenvolvimento> retorno = Lists.newArrayList();
+        try {
+            log.debug("REST request to SOLICITACOES get a page of Chamados");
+            retorno = chamadoService.findSolicitacoesByChamado(id);
+            log.debug("VAI RETORNAR " + retorno.size());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(retorno, HttpStatus.OK);
+    }
+
     /**
      * GET  /chamados/:id : get the "id" chamado.
      *
@@ -109,6 +164,19 @@ public class ChamadoResource {
     public ResponseEntity<Chamado> getChamado(@PathVariable Long id) {
         log.debug("REST request to get Chamado : {}", id);
         Chamado chamado = chamadoService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(chamado));
+    }
+
+    @GetMapping("/chamados-criar")
+    @Timed
+    public ResponseEntity<Chamado> criar() {
+        log.debug("REST request to criar Chamado ");
+        Chamado chamado = new Chamado();
+        chamado.setSituacao(SituacaoChamado.ABERTO);
+        chamado.setCriadoEm(LocalDate.now());
+        chamado.setSolicitante(userService.getUserWithAuthorities());
+        chamado.setOrdem(chamadoService.buscarUltimaOrdemDisponivel());
+
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(chamado));
     }
 
@@ -124,6 +192,18 @@ public class ChamadoResource {
         log.debug("REST request to delete Chamado : {}", id);
         chamadoService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+
+    @PostMapping("/soliciar-desenvolvimento")
+    @Timed
+    public ResponseEntity<Void> solicitarDesenvolvimento(@Valid @RequestBody Chamado chamado) {
+        try {
+            chamadoService.solicitarDesenvolvimento(chamado);
+            return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, chamado.toString())).build();
+        } catch (RedmineException e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, e.getMessage())).build();
+        }
     }
 
 }

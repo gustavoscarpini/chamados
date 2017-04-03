@@ -7,7 +7,7 @@
         Added the constraints for entity Chamado.
     -->
     <changeSet id="20170211214039-2" author="jhipster">
-        
+
         <addForeignKeyConstraint baseColumnNames="solicitante_id"
                                  baseTableName="chamado"
                                  constraintName="fk_chamado_solicitante_id"
@@ -26,5 +26,19 @@
                                  referencedColumnNames="id"
                                  referencedTableName="cliente"/>
 
+    </changeSet>
+    <changeSet id="20170211214039-3" author="scarpini">
+        <addForeignKeyConstraint baseColumnNames="chamado_id"
+                                 baseTableName="solicitacaodesenvolvimento"
+                                 constraintName="fk_solicitacao_chamado_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="chamado"/>
+    </changeSet>
+    <changeSet id="20170211214039-4" author="scarpini">
+        <addForeignKeyConstraint baseColumnNames="modulo_id"
+                                 baseTableName="chamado"
+                                 constraintName="fk_chamado_modulo_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="modulo"/>
     </changeSet>
 </databaseChangeLog>

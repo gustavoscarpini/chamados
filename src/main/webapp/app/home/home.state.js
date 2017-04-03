@@ -12,7 +12,7 @@
             parent: 'app',
             url: '/',
             data: {
-                authorities: []
+                authorities: ['ROLE_ATENDENTE', 'ROLE_CLIENTE'],
             },
             views: {
                 'content@': {
@@ -50,6 +50,6 @@
                     };
                 }],
             }
-        });
+        })
     }
 })();

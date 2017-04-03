@@ -1,0 +1,29 @@
+
+<div>
+    <h2><span data-translate="chamadosApp.modulo.detail.title">Modulo</span> {{vm.modulo.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="chamadosApp.modulo.descricao">Descricao</span></dt>
+        <dd>
+            <span>{{vm.modulo.descricao}}</span>
+        </dd>
+        <dt><span data-translate="chamadosApp.modulo.usuarios">Usuarios</span></dt>
+        <dd>
+            <span ng-repeat="usuarios in vm.modulo.usuarios">
+                {{usuarios.login}}{{$last ? '' : ', '}}
+            </span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="modulo-detail.edit({id:vm.modulo.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

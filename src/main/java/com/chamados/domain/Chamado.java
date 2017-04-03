@@ -1,15 +1,16 @@
 package com.chamados.domain;
 
+import com.chamados.domain.enumeration.SituacaoChamado;
+import com.chamados.domain.enumeration.TipoChamado;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
-
-import com.chamados.domain.enumeration.TipoChamado;
 
 /**
  * A Chamado.
@@ -45,7 +46,7 @@ public class Chamado implements Serializable {
     @Column(name = "criado_em", nullable = false)
     private LocalDate criadoEm;
 
-    @NotNull
+
     @Column(name = "prazo", nullable = false)
     private LocalDate prazo;
 
@@ -54,6 +55,7 @@ public class Chamado implements Serializable {
     private Integer ordem;
 
     @ManyToOne
+    @NotNull
     private User solicitante;
 
     @ManyToOne
@@ -61,6 +63,18 @@ public class Chamado implements Serializable {
 
     @ManyToOne
     private Cliente cliente;
+
+    @Column(name = "tempo_estimado", nullable = false)
+    private Integer tempoEstimado;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "situacao", nullable = false)
+    private SituacaoChamado situacao;
+
+    @NotNull
+    @ManyToOne
+    private Modulo modulo;
 
     public Long getId() {
         return id;
@@ -185,6 +199,36 @@ public class Chamado implements Serializable {
 
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
+    }
+
+    public Integer getTempoEstimado() {
+        return tempoEstimado;
+    }
+
+    public void setTempoEstimado(Integer tempoEstimado) {
+        this.tempoEstimado = tempoEstimado;
+    }
+
+    public SituacaoChamado getSituacao() {
+        return situacao;
+    }
+
+    public void setSituacao(SituacaoChamado situacao) {
+        this.situacao = situacao;
+    }
+
+
+    public Modulo getModulo() {
+        return modulo;
+    }
+
+    public void setModulo(Modulo modulo) {
+        this.modulo = modulo;
+    }
+
+    public Chamado modulo(Modulo modulo) {
+        this.modulo = modulo;
+        return this;
     }
 
     @Override

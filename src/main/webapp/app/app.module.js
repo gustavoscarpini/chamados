@@ -16,14 +16,16 @@
             'ui.router',
             'infinite-scroll',
             // jhipster-needle-angularjs-add-module JHipster will add new module here
-            'angular-loading-bar'
+            'angular-loading-bar',
+            'ncy-angular-breadcrumb'
         ])
         .run(run);
 
-    run.$inject = ['stateHandler', 'translationHandler'];
+    run.$inject = ['$rootScope','stateHandler', 'translationHandler', '$state'];
 
-    function run(stateHandler, translationHandler) {
+    function run($rootScope, stateHandler, translationHandler, $state) {
         stateHandler.initialize();
         translationHandler.initialize();
+        $rootScope.$state = $state;
     }
 })();

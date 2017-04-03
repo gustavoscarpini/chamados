@@ -5,39 +5,47 @@
         .module('chamadosApp')
         .controller('HomeController', HomeController);
 
-    HomeController.$inject = ['$scope', 'Principal', 'LoginService', '$state', 'Chamado', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
+    HomeController.$inject = ['$scope', 'Principal', '$state', 'Chamado', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams', '$uibModal'];
 
-    function HomeController($scope, Principal, LoginService, $state, Chamado, ParseLinks, AlertService, paginationConstants, pagingParams) {
+    function HomeController($scope, Principal, $state, Chamado, ParseLinks, AlertService, paginationConstants, pagingParams, $uibModal) {
         var vm = this;
 
         vm.account = null;
         vm.isAuthenticated = null;
-        vm.login = LoginService.open;
+        vm.login = login;
         vm.register = register;
-
+        vm.situacoes = Chamado.getSituacoes();
         vm.loadPage = loadPage;
         vm.predicate = pagingParams.predicate;
         vm.reverse = pagingParams.ascending;
         vm.transition = transition;
         vm.itemsPerPage = paginationConstants.itemsPerPage;
+        vm.situacao = 'ABERTO';
+        vm.loadAll = loadAll;
+        vm.rejeitar = rejeitar;
 
         $scope.$on('authenticationSuccess', function () {
             getAccount();
         });
 
+        function login() {
+            $state.go('login');
+        }
+
         getAccount();
         loadAll();
 
         function loadAll() {
-            Chamado.query({
+            Chamado.queryBySituacao({
+                situacao: vm.situacao,
                 page: pagingParams.page - 1,
                 size: vm.itemsPerPage,
                 sort: sort()
             }, onSuccess, onError);
             function sort() {
                 var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
-                if (vm.predicate !== 'id') {
-                    result.push('id');
+                if (vm.predicate !== 'ordem') {
+                    result.push('ordem');
                 }
                 return result;
             }
@@ -79,5 +87,37 @@
         function register() {
             $state.go('register');
         }
+
+        function rejeitar() {
+            var modalInstance = $uibModal.open({
+                ariaLabelledBy: 'modal-title',
+                ariaDescribedBy: 'modal-body',
+                templateUrl: 'myModalContent.html',
+                controller: 'ModalInstanceCtrl',
+                controllerAs: 'vm'
+            });
+        };
+
     }
+
+
+    angular
+        .module('chamadosApp')
+        .controller('ModalInstanceCtrl', ModalInstanceCtrl);
+
+    ModalInstanceCtrl.$inject = ['$uibModalInstance'];
+
+    function ModalInstanceCtrl($uibModalInstance) {
+        var vm = this;
+
+        vm.ok = function () {
+            $uibModalInstance.close();
+        };
+
+        vm.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
+    };
 })();
+
+

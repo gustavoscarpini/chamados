@@ -15,7 +15,20 @@
                     templateUrl: 'app/layouts/navbar/navbar.html',
                     controller: 'NavbarController',
                     controllerAs: 'vm'
+                },
+                'menu@': {
+                    templateUrl: 'app/layouts/menu/menu.html',
+                    controller: 'NavbarController',
+                    controllerAs: 'vm'
+                },
+                'footer@': {
+                    templateUrl: 'app/layouts/footer/footer.html',
+                    controller: 'NavbarController',
+                    controllerAs: 'vm'
                 }
+            },
+            data: {
+                specialClass: "gray-bg"
             },
             resolve: {
                 authorize: ['Auth',

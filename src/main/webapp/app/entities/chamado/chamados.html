@@ -1,82 +1,169 @@
-<div>
-    <h2 data-translate="chamadosApp.chamado.home.title">Chamados</h2>
-    <jhi-alert></jhi-alert>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-xs-4 no-padding-left">
-                <button class="btn btn-primary" ui-sref="chamado.new" >
-                    <span class="glyphicon glyphicon-plus"></span>
-                    <span  data-translate="chamadosApp.chamado.home.createLabel">
-                        Create new Chamado
-                    </span>
-                </button>
+<div ng-cloak ng-switch="vm.isAuthenticated()">
+    <div class="row" ng-switch-when="false">
+        <div class="col-md-12">
+            <div class="alert alert-warning"
+                 data-translate="global.messages.info.authenticated" translate-compile>
+                If you want to <a class="alert-link" href="" ng-click="vm.login()">sign in</a>, you can try the
+                default accounts:<br/>- Administrator (login="admin" and password="admin") <br/>- User (login="user"
+                and password="user").
+            </div>
+
+            <div class="alert alert-warning" ng-switch-when="false" data-translate="global.messages.info.register"
+                 translate-compile>
+                You don't have an account yet? <a class="alert-link" ui-sref="register">Register a new account</a>
             </div>
         </div>
     </div>
-    <br/>
-    <div class="table-responsive">
-        <table class="jh-table table table-striped">
-            <thead>
-                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
-                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="titulo"><span data-translate="chamadosApp.chamado.titulo">Titulo</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="conteudo"><span data-translate="chamadosApp.chamado.conteudo">Conteudo</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="tipoChamado"><span data-translate="chamadosApp.chamado.tipoChamado">Tipo Chamado</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="criadoEm"><span data-translate="chamadosApp.chamado.criadoEm">Criado Em</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="prazo"><span data-translate="chamadosApp.chamado.prazo">Prazo</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="ordem"><span data-translate="chamadosApp.chamado.ordem">Ordem</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="solicitante.login"><span data-translate="chamadosApp.chamado.solicitante">Solicitante</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="responsavel.login"><span data-translate="chamadosApp.chamado.responsavel">Responsavel</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="cliente.nome"><span data-translate="chamadosApp.chamado.cliente">Cliente</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="chamado in vm.chamados track by chamado.id">
-                    <td><a ui-sref="chamado-detail({id:chamado.id})">{{chamado.id}}</a></td>
-                    <td>{{chamado.titulo}}</td>
-                    <td>{{chamado.conteudo}}</td>
-                    <td data-translate="{{'chamadosApp.TipoChamado.' + chamado.tipoChamado}}">{{chamado.tipoChamado}}</td>
-                        <td>{{chamado.criadoEm | date:'mediumDate'}}</td>
-                        <td>{{chamado.prazo | date:'mediumDate'}}</td>
-                    <td>{{chamado.ordem}}</td>
-                    <td>
-                        {{chamado.solicitante.login}}
-                    </td>
-                    <td>
-                        {{chamado.responsavel.login}}
-                    </td>
-                    <td>
-                        <a ui-sref="cliente-detail({id:chamado.cliente.id})">{{chamado.cliente.nome}}</a>
-                    </td>
-                    <td class="text-right">
-                        <div class="btn-group flex-btn-group-container">
-                            <button type="submit"
-                                    ui-sref="chamado-detail({id:chamado.id})"
-                                    class="btn btn-info btn-sm">
-                                <span class="glyphicon glyphicon-eye-open"></span>
-                                <span class="hidden-sm-down" data-translate="entity.action.view"></span>
-                            </button>
-                            <button type="submit"
-                                    ui-sref="chamado.edit({id:chamado.id})"
-                                    class="btn btn-primary btn-sm">
-                                <span class="glyphicon glyphicon-pencil"></span>
-                                <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
-                            </button>
-                            <button type="submit"
-                                    ui-sref="chamado.delete({id:chamado.id})"
-                                    class="btn btn-danger btn-sm">
-                                <span class="glyphicon glyphicon-remove-circle"></span>
-                                <span class="hidden-sm-down" data-translate="entity.action.delete"></span>
-                            </button>
+    <div class="row" ng-switch-when="true">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    Sua Lista de Chamados
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="jh-table table table-striped">
+                                    <tbody>
+                                    <tr ng-repeat="chamado in vm.chamados track by chamado.id">
+                                        <td>
+                                            <div class="vote-actions">
+                                                <a href="#">
+                                                    <i class="fa fa-chevron-up"> </i>
+                                                </a>
+                                                <div>{{chamado.ordem}}</div>
+                                                <a href="#">
+                                                    <i class="fa fa-chevron-down"> </i>
+                                                </a>
+                                            </div>
+
+                                        </td>
+                                        <td>
+                                           <span class="label label-{{vm.getCorPorTipo(chamado.tipoChamado)}}">
+                                            {{chamado.tipoChamado}}
+                                           </span>
+                                        </td>
+                                        <td class="issue-info">
+                                            <a ui-sref="edit-chamado({id:chamado.id})">
+                                                CH-{{chamado.id}}
+                                            </a>
+                                            <small>
+                                                {{chamado.titulo}}
+                                            </small>
+                                        </td>
+                                        <td>{{chamado.solicitante.firstName}}</td>
+                                        <td>{{chamado.resposavel.firstName}}</td>
+                                        <td>{{chamado.criadoEm | date:'mediumDate'}}</td>
+                                        <td>
+                                            <i ng-if="chamado.tempoEstimado" class="fa fa-clock-o"></i>
+                                            <span ng-if="!chamado.tempoEstimado" class="label label-warning">
+                                                        Aguardando P.O.
+                                                    </span>
+                                            {{chamado.tempoEstimado}}
+                                        </td>
+                                        <td class="text-right">
+
+                                            <button type="submit"
+                                                    ng-show="chamado.situacao != 'ABERTO' &&  vm.account.id == chamado.solicitante.id"
+                                                    ui-sref="edit-chamado({id:chamado.id})"
+                                                    class="btn btn-primary btn-sm">
+                                                <span class="glyphicon glyphicon-pencil"></span>
+                                                <span class="hidden-sm-down"
+                                                      data-translate="entity.action.edit"></span>
+                                            </button>
+
+                                            <button type="submit"
+                                                    has-authority="ROLE_ATENDENTE"
+                                                    ng-show="chamado.situacao == 'ABERTO'"
+                                                    ui-sref="edit-chamado({id:chamado.id})"
+                                                    class="btn btn-success btn-sm">
+                                                <span class="glyphicon glyphicon-check"></span>
+                                                <span class="hidden-sm-down"> Aceitar </span>
+                                            </button>
+
+                                            <button type="submit"
+                                                    ng-show="chamado.situacao == 'TESTE'"
+                                                    ui-sref="edit-chamado({id:chamado.id})"
+                                                    class="btn btn-success btn-sm">
+                                                <span class="glyphicon glyphicon-check"></span>
+                                                <span class="hidden-sm-down"> Validar </span>
+                                            </button>
+
+                                            <button type="submit"
+                                                    ng-show="chamado.situacao == 'TESTE'"
+                                                    ng-click="vm.rejeitar()"
+                                                    class="btn btn-danger btn-sm">
+                                                <span class="glyphicon glyphicon-warning-sign"></span>
+                                                <span class="hidden-sm-down"> Rejeitar </span>
+                                            </button>
+
+                                            <button type="submit"
+                                                    ng-show="chamado.situacao == 'SUPORTE'"
+                                                    ui-sref="edit-chamado({id:chamado.id})"
+                                                    class="btn btn-success btn-sm">
+                                                <span class="glyphicon glyphicon-check"></span>
+                                                <span class="hidden-sm-down"> Concluir </span>
+                                            </button>
+
+                                            <button type="submit"
+                                                    ng-show="chamado.situacao == 'SUPORTE'"
+                                                    ui-sref="edit-chamado({id:chamado.id})"
+                                                    class="btn btn-warning btn-sm">
+                                                <span class="glyphicon glyphicon-console"></span>
+                                                <span class="hidden-sm-down"> Encaminar </span>
+                                            </button>
+
+                                            <button type="submit"
+                                                    ng-show="chamado.situacao == 'SUPORTE'"
+                                                    ui-sref="edit-chamado({id:chamado.id})"
+                                                    class="btn btn-danger btn-sm">
+                                                <span class="glyphicon glyphicon-warning-sign"></span>
+                                                <span class="hidden-sm-down"> Devolver </span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="text-center">
+                                <jhi-item-count page="vm.page" total="vm.queryCount"
+                                                items-per-page="vm.itemsPerPage"></jhi-item-count>
+                                <uib-pagination class="pagination-sm" total-items="vm.totalItems"
+                                                items-per-page="vm.itemsPerPage"
+                                                ng-model="vm.page" ng-change="vm.transition()"></uib-pagination>
+                            </div>
                         </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="text-center">
-        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
-        <uib-pagination class="pagination-sm" total-items="vm.totalItems" items-per-page="vm.itemsPerPage" ng-model="vm.page" ng-change="vm.transition()"></uib-pagination>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
 </div>
+
+
+<script type="text/ng-template" id="myModalContent.html">
+    <div class="modal-header">
+        <h3 class="modal-title" id="modal-title">Rejeição de Chamado</h3>
+    </div>
+    <div class="modal-body" id="modal-body">
+        <div class="alert alert-warning">Tem certeza que deseja rejeitar esse chamado?</div>
+        <label class="control-label" for="field_conteudo">Motivo</label>
+        <textarea type="text" class="form-control" name="conteudo" id="field_conteudo"
+                  required ng-minlength="2" ng-maxlength="3000"/>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-default" type="button" ng-click="vm.cancel()">Cancelar</button>
+        <button class="btn btn-danger" type="button" ng-click="vm.ok()">
+            <i class="glyphicon glyphicon-warning-sign"></i>
+            Não foi cumprido
+        </button>
+        <button class="btn btn-warning" type="button" ng-click="vm.cancel()">
+            <i class="glyphicon glyphicon-console"></i>
+            Solciitar Melhorias
+        </button>
+    </div>
+</script>

@@ -5,9 +5,9 @@
         .module('chamadosApp')
         .controller('ResetFinishController', ResetFinishController);
 
-    ResetFinishController.$inject = ['$stateParams', '$timeout', 'Auth', 'LoginService'];
+    ResetFinishController.$inject = ['$state','$stateParams', '$timeout', 'Auth'];
 
-    function ResetFinishController ($stateParams, $timeout, Auth, LoginService) {
+    function ResetFinishController ($state, $stateParams, $timeout, Auth) {
         var vm = this;
 
         vm.keyMissing = angular.isUndefined($stateParams.key);
@@ -15,11 +15,15 @@
         vm.doNotMatch = null;
         vm.error = null;
         vm.finishReset = finishReset;
-        vm.login = LoginService.open;
+        vm.login = login;
         vm.resetAccount = {};
         vm.success = null;
 
         $timeout(function (){angular.element('#password').focus();});
+
+        function login(){
+            $state.go('login');
+        }
 
         function finishReset() {
             vm.doNotMatch = null;

@@ -1,0 +1,139 @@
+<nav class="navbar-default navbar-static-side" role="navigation" ng-switch="vm.isAuthenticated()">
+    <div class="sidebar-collapse">
+        <ul side-navigation class="nav metismenu" id="side-menu" ng-switch-when="true">
+            <li class="nav-header">
+                <div class="profile-element">
+                    <div style="text-align: center">
+
+                       <span>
+                            <img alt="image" class="img-circle"
+                                 ng-src="/content/images/mayka.PNG" width="48"/>
+                        </span>
+
+                        <a href="">
+                            <span class="clear">
+                                <span class="block m-t-xs">
+                                    <strong class="font-bold">{{vm.account.firstName}}</strong>
+                                </span>
+                                <span class="text-muted text-xs block">
+                                    Alguma coisa
+                                </span>
+                            </span>
+                        </a>
+                    </div>
+                </div>
+                <div class="logo-element">
+                    <i class="fa fa-globe fa-2x"></i>
+                </div>
+            </li>
+
+            <li ui-sref-active="active">
+                <a ui-sref="home">
+                    <i class="fa fa-dashboard"></i>
+                    <span class="nav-label">DashBoard</span>
+                </a>
+            </li>
+
+            <li ui-sref-active-eq="active">
+                <a ui-sref="chamado({situacao: 'TESTE'})">
+                    <i class="fa fa-history"></i>
+                    <span class="nav-label">Teste Liberado</span>
+                </a>
+            </li>
+
+            <li ui-sref-active-eq="active">
+                <a ui-sref="chamado({situacao: 'ABERTO'})">
+                    <i class="fa fa-edit"></i>
+                    <span class="nav-label">Abertos</span>
+                </a>
+            </li>
+
+            <li ui-sref-active-eq="active">
+                <a ui-sref="chamado({situacao: 'SUPORTE'})">
+                    <i class="fa fa-users"></i>
+                    <span class="nav-label">Em Analise</span>
+                </a>
+
+
+            <li ui-sref-active-eq="active">
+                <a ui-sref="chamado({situacao: 'DESENVOLVIMENTO'})">
+                    <i class="fa fa-desktop"></i>
+                    <span class="nav-label">Em Desenvolvimento</span>
+                </a>
+            </li>
+
+            <li ui-sref-active-eq="active">
+                <a ui-sref="chamado({situacao: null})">
+                    <i class="fa fa-tasks"></i>
+                    <span class="nav-label">Todos Chamados</span>
+                </a>
+            </li>
+
+            <li ui-sref-active="active" has-authority="ROLE_ADMIN">
+                <a ui-sref="cliente">
+                    <i class="fa fa-group"></i>
+                    <span class="nav-label">Clientes</span>
+                </a>
+            </li>
+            <li ui-sref-active="active" has-authority="ROLE_ADMIN">
+                <a ui-sref="modulo">
+                    <i class="fa fa-pie-chart"></i>
+                    <span class="nav-label">Módulos</span>
+                </a>
+            </li>
+
+            <li has-authority="ROLE_ADMIN">
+                <a href="" id="admin-menu">
+                    <span class="fa fa-gears"></span>
+                    <span class="nav-label">Administração</span>
+                    <span class="fa arrow"></span>
+                </a>
+                <ul class="nav nav-second-level">
+                    <li ui-sref-active="active">
+                        <a ui-sref="user-management">
+                            <span class="fa fa-user"></span>
+                            <span class="nav-label">Usuários</span>
+                        </a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="jhi-metrics">
+                            <span class="fa fa-dashboard"></span>
+                            <span class="nav-label">Métricas</span>
+                        </a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="jhi-health">
+                            <span class="fa fa-heart"></span>
+                            <span class="nav-label">Health</span>
+                        </a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="jhi-configuration">
+                            <span class="fa fa-gear"></span>
+                            <span class="nav-label">Configurações</span>
+                        </a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="audits">
+                            <span class="fa fa-bell"></span>
+                            <span class="nav-label">Auditoria</span>
+                        </a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="logs">
+                            <span class="fa fa-tasks"></span>
+                            <span class="nav-label">Logs</span>
+                        </a>
+                    </li>
+                    <li ng-show="vm.swaggerEnabled">
+                        <a ui-sref="docs">
+                            <span class="fa fa-book"></span>
+                            <span class="nav-label">API</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</nav>
+

@@ -9,6 +9,7 @@
                 "main": "Entidades",
                 "chamado": "Chamado",
                 "cliente": "Cliente",
+                "modulo": "Modulo",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

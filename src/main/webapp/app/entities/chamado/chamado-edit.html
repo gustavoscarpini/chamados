@@ -1,133 +1,214 @@
-<form name="editForm" role="form" novalidate ng-submit="vm.save()" show-validation>
+<div class="row" >
+    <div class="col-lg-12">
+        <div class="ibox">
+            <div class="ibox-title">
+                {{vm.chamado.id ? 'Editando Chamado' :'Novo Chamado'}}
+                <div class="ibox-tools">
+                    <span class="label label-info">{{vm.chamado.situacao}}</span>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <div class="row">
+                    <form name="editForm" role="form" novalidate ng-submit="vm.save()" show-validation>
 
 
-    <jhi-alert-error></jhi-alert-error>
-    <div class="form-group" ng-show="vm.chamado.id">
-        <label for="id" data-translate="global.field.id">ID</label>
-        <input type="text" class="form-control" id="id" name="id"
-               ng-model="vm.chamado.id" readonly/>
-    </div>
-    <div class="form-group">
-        <label class="control-label" data-translate="chamadosApp.chamado.titulo" for="field_titulo">Titulo</label>
-        <input type="text" class="form-control" name="titulo" id="field_titulo"
-               ng-model="vm.chamado.titulo"
-               required ng-minlength="2" ng-maxlength="255"/>
-        <div ng-show="editForm.titulo.$invalid">
-            <p class="help-block"
-               ng-show="editForm.titulo.$error.required" data-translate="entity.validation.required">
-                This field is required.
-            </p>
-            <p class="help-block"
-               ng-show="editForm.titulo.$error.minlength" data-translate="entity.validation.minlength"
-               translate-value-min="2">
-                This field is required to be at least 2 characters.
-            </p>
-            <p class="help-block"
-               ng-show="editForm.titulo.$error.maxlength" data-translate="entity.validation.maxlength"
-               translate-value-max="255">
-                This field cannot be longer than 255 characters.
-            </p>
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="control-label" data-translate="chamadosApp.chamado.conteudo" for="field_conteudo">Conteudo</label>
-        <input type="text" class="form-control" name="conteudo" id="field_conteudo"
-               ng-model="vm.chamado.conteudo"
-               required ng-minlength="2" ng-maxlength="3000"/>
-        <div ng-show="editForm.conteudo.$invalid">
-            <p class="help-block"
-               ng-show="editForm.conteudo.$error.required" data-translate="entity.validation.required">
-                This field is required.
-            </p>
-            <p class="help-block"
-               ng-show="editForm.conteudo.$error.minlength" data-translate="entity.validation.minlength"
-               translate-value-min="2">
-                This field is required to be at least 2 characters.
-            </p>
-            <p class="help-block"
-               ng-show="editForm.conteudo.$error.maxlength" data-translate="entity.validation.maxlength"
-               translate-value-max="3000">
-                This field cannot be longer than 3000 characters.
-            </p>
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="control-label" data-translate="chamadosApp.chamado.tipoChamado" for="field_tipoChamado">Tipo
-            Chamado</label>
-        <select class="form-control" name="tipoChamado" ng-model="vm.chamado.tipoChamado" id="field_tipoChamado"
-                required>
-            <option value="SUPORTE" data-translate="chamadosApp.TipoChamado.SUPORTE">SUPORTE</option>
-            <option value="BUG" data-translate="chamadosApp.TipoChamado.BUG">BUG</option>
-            <option value="MELHORIA" data-translate="chamadosApp.TipoChamado.MELHORIA">MELHORIA</option>
-        </select>
-        <div ng-show="editForm.tipoChamado.$invalid">
-            <p class="help-block"
-               ng-show="editForm.tipoChamado.$error.required" data-translate="entity.validation.required">
-                This field is required.
-            </p>
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="control-label" data-translate="chamadosApp.chamado.criadoEm" for="field_criadoEm">Criado
-            Em</label>
-        <div class="input-group">
-            <input id="field_criadoEm" type="text" class="form-control" name="criadoEm"
-                   uib-datepicker-popup="{{dateformat}}" ng-model="vm.chamado.criadoEm"
-                   is-open="vm.datePickerOpenStatus.criadoEm"
-                   required/>
-            <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('criadoEm')"><i
-                            class="glyphicon glyphicon-calendar"></i></button>
-                    </span>
-        </div>
-        <div ng-show="editForm.criadoEm.$invalid">
-            <p class="help-block"
-               ng-show="editForm.criadoEm.$error.required" data-translate="entity.validation.required">
-                This field is required.
-            </p>
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="control-label" data-translate="chamadosApp.chamado.prazo" for="field_prazo">Prazo</label>
-        <div class="input-group">
-            <input id="field_prazo" type="text" class="form-control" name="prazo" uib-datepicker-popup="{{dateformat}}"
-                   ng-model="vm.chamado.prazo" is-open="vm.datePickerOpenStatus.prazo"
-                   required/>
-            <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('prazo')"><i
-                            class="glyphicon glyphicon-calendar"></i></button>
-                    </span>
-        </div>
-        <div ng-show="editForm.prazo.$invalid">
-            <p class="help-block"
-               ng-show="editForm.prazo.$error.required" data-translate="entity.validation.required">
-                This field is required.
-            </p>
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="control-label" data-translate="chamadosApp.chamado.ordem" for="field_ordem">Ordem</label>
-        <input type="number" class="form-control" name="ordem" id="field_ordem"
-               ng-model="vm.chamado.ordem"
-               required/>
-        <div ng-show="editForm.ordem.$invalid">
-            <p class="help-block"
-               ng-show="editForm.ordem.$error.required" data-translate="entity.validation.required">
-                This field is required.
-            </p>
-            <p class="help-block"
-               ng-show="editForm.ordem.$error.number" data-translate="entity.validation.number">
-                This field should be a number.
-            </p>
-        </div>
-    </div>
+                        <jhi-alert-error></jhi-alert-error>
 
-    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
-        <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span
-        data-translate="entity.action.cancel">Cancel</span>
-    </button>
-    <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
-        <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
-    </button>
+                        <div class="form-group col-md-12" ng-show="vm.chamado.id">
+                            <label for="id" data-translate="global.field.id">ID</label>
+                            <input type="text" class="form-control" id="id" name="id"
+                                   ng-model="vm.chamado.id" readonly/>
+                        </div>
 
-</form>
+                        <div class="form-group col-md-4">
+                            <label class="control-label" data-translate="chamadosApp.chamado.tipoChamado"
+                                   for="field_tipoChamado">Tipo
+                                Chamado</label>
+                            <select class="form-control"
+                                    ng-disabled="(vm.chamado.id && vm.chamado.situacao != 'ABERTO') || (vm.account.id != vm.chamado.solicitante.id)"
+                                    name="tipoChamado" ng-model="vm.chamado.tipoChamado" id="field_tipoChamado"
+                                    required>
+                                <option value="SUPORTE">Suporte ou Dúvida</option>
+                                <option value="BUG">Bug</option>
+                                <option value="MELHORIA">Melhoria</option>
+                                <option value="NOVA_FUNCIONALIDADE">Nova Funcionalidade</option>
+                            </select>
+                            <div ng-show="editForm.tipoChamado.$invalid">
+                                <p class="help-block"
+                                   ng-show="editForm.tipoChamado.$error.required"
+                                   data-translate="entity.validation.required">
+                                    This field is required.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label for="field_modulo">Módulo</label>
+                            <select class="form-control"
+                                    ng-disabled="(vm.chamado.id && vm.chamado.situacao != 'ABERTO') || (vm.account.id != vm.chamado.solicitante.id)"
+                                    id="field_modulo" name="modulo" ng-model="vm.chamado.modulo"
+                                    ng-options="modulo as modulo.descricao for modulo in vm.modulos track by modulo.id">
+                                <option value=""></option>
+                            </select>
+                        </div>
+
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label" data-translate="chamadosApp.chamado.ordem" for="field_ordem">Ordem</label>
+                            <input type="number"
+                                   ng-disabled="(vm.chamado.id && vm.chamado.situacao != 'ABERTO') || (vm.account.id != vm.chamado.solicitante.id)"
+                                   class="form-control" name="ordem" id="field_ordem"
+                                   ng-model="vm.chamado.ordem"
+                                   required/>
+                            <div ng-show="editForm.ordem.$invalid">
+                                <p class="help-block"
+                                   ng-show="editForm.ordem.$error.required" data-translate="entity.validation.required">
+                                    This field is required.
+                                </p>
+                                <p class="help-block"
+                                   ng-show="editForm.ordem.$error.number" data-translate="entity.validation.number">
+                                    This field should be a number.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label" data-translate="chamadosApp.chamado.criadoEm"
+                                   for="field_criadoEm">Criado
+                                Em</label>
+                            <input id="field_criadoEm" type="text"
+                                   readonly
+                                   class="form-control" name="criadoEm"
+                                   value="{{vm.chamado.criadoEm |  date:'mediumDate'}}"
+                                   is-open="vm.datePickerOpenStatus.criadoEm"
+                                   required/>
+
+                            <div ng-show="editForm.criadoEm.$invalid">
+                                <p class="help-block"
+                                   ng-show="editForm.criadoEm.$error.required"
+                                   data-translate="entity.validation.required">
+                                    This field is required.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-12">
+                            <label class="control-label" data-translate="chamadosApp.chamado.titulo"
+                                   for="field_titulo">Titulo</label>
+                            <input type="text"
+                                   ng-disabled="(vm.chamado.id && vm.chamado.situacao != 'ABERTO') || (vm.account.id != vm.chamado.solicitante.id)"
+                                   class="form-control" name="titulo" id="field_titulo"
+                                   ng-model="vm.chamado.titulo"
+                                   required ng-minlength="2" ng-maxlength="255"/>
+                            <div ng-show="editForm.titulo.$invalid">
+                                <p class="help-block"
+                                   ng-show="editForm.titulo.$error.required"
+                                   data-translate="entity.validation.required">
+                                    This field is required.
+                                </p>
+                                <p class="help-block"
+                                   ng-show="editForm.titulo.$error.minlength"
+                                   data-translate="entity.validation.minlength"
+                                   translate-value-min="2">
+                                    This field is required to be at least 2 characters.
+                                </p>
+                                <p class="help-block"
+                                   ng-show="editForm.titulo.$error.maxlength"
+                                   data-translate="entity.validation.maxlength"
+                                   translate-value-max="255">
+                                    This field cannot be longer than 255 characters.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-12">
+                            <label class="control-label" data-translate="chamadosApp.chamado.conteudo"
+                                   for="field_conteudo">Conteudo</label>
+                            <textarea type="text" class="form-control"
+                                      ng-disabled="(vm.chamado.id && vm.chamado.situacao != 'ABERTO') || (vm.account.id != vm.chamado.solicitante.id)"
+                                      name="conteudo" id="field_conteudo"
+                                      ng-model="vm.chamado.conteudo"
+                                      required ng-minlength="2" ng-maxlength="3000"/>
+                            <div ng-show="editForm.conteudo.$invalid">
+                                <p class="help-block"
+                                   ng-show="editForm.conteudo.$error.required"
+                                   data-translate="entity.validation.required">
+                                    This field is required.
+                                </p>
+                                <p class="help-block"
+                                   ng-show="editForm.conteudo.$error.minlength"
+                                   data-translate="entity.validation.minlength"
+                                   translate-value-min="2">
+                                    This field is required to be at least 2 characters.
+                                </p>
+                                <p class="help-block"
+                                   ng-show="editForm.conteudo.$error.maxlength"
+                                   data-translate="entity.validation.maxlength"
+                                   translate-value-max="3000">
+                                    This field cannot be longer than 3000 characters.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-4 col-md-offset-4" ng-show="vm.solicitacoes.length > 0">
+                            <label for="listaTickets">Tickets em Desenvolvimento</label>
+                            <ul id="listaTickets" class="list-group">
+                                <li class="list-group-item" ng-repeat="solicitacao in vm.solicitacoes">
+                                    <a href="http://redmine.webpublico.com.br/issues/{{solicitacao.numero}}"
+                                       target="_blank">
+                                        {{solicitacao.numero}}
+                                    </a>
+                                    <span class="label label-info pull-right"> {{solicitacao.situacao}} </span>
+                                </li>
+                            </ul>
+                        </div>
+
+
+                        <div class="form-group col-md-12 text-center">
+                            <button type="button" class="btn btn-default" data-dismiss="modal"
+                                    ui-sref="{{ vm.previousState }}">
+                                <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span
+                                data-translate="entity.action.cancel">Cancel</span>
+                            </button>
+                            <button type="submit"
+                                    ng-show="vm.chamado.situacao == 'ABERTO' && vm.account.id == vm.chamado.solicitante.id"
+                                    ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
+                                <i class="fa fa-save"></i>
+                                &nbsp;<span>Salvar</span>
+                            </button>
+
+
+                            <button type="button"
+                                    has-authority="ROLE_ATENDENTE"
+                                    ng-show="vm.chamado.id && vm.chamado.situacao == 'ABERTO'"
+                                    ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary"
+                                    ng-click="vm.aceitar()">
+                                <i class="fa fa-save"></i>
+                                &nbsp;<span>Aceitar</span>
+                            </button>
+
+                            <button type="button"
+                                    has-authority="ROLE_ATENDENTE"
+                                    ng-show="vm.chamado.id && vm.chamado.situacao == 'ABERTO'"
+                                    ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-danger">
+                                <i class="fa fa-save"></i>
+                                &nbsp;<span>Rejeitar</span>
+                            </button>
+
+
+                            <button type="button"
+                                    has-authority="ROLE_ATENDENTE"
+                                    ng-show="vm.chamado.situacao == 'SUPORTE'"
+                                    ng-click="vm.solicitarDesenvolvimento()"
+                                    ng-disabled="editForm.$invalid || vm.isSaving || !vm.chamado.id"
+                                    class="btn btn-warning">
+                                <span class="glyphicon glyphicon-console"></span>&nbsp;Solicitar Desenvolvimento
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

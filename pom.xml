@@ -425,6 +425,14 @@
             <version>${spring-social-twitter.version}</version>
         </dependency>
         <!-- jhipster-needle-maven-add-dependency -->
+
+        <!-- redmine-java-api -->
+        <dependency>
+            <groupId>com.taskadapter</groupId>
+            <artifactId>redmine-java-api</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
     </dependencies>
     <build>
         <defaultGoal>spring-boot:run</defaultGoal>

@@ -1,0 +1,62 @@
+<div class="col-md-12">
+    <div class="col-md-8 text-black">
+        <div class="widget style1">
+            <div class="row">
+                <div class="col-xs-12 text-center">
+                    <i class="fa fa-comments-o fa-4x"></i>
+                    <h3 class="font-bold">Bem vindo ao Sistema</h3>
+                </div>
+                <div class="col-xs-12 m-t-md">
+                    <span>
+                         Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Morbi gravida libero nec velit. Morbi scelerisque luctus velit. Etiam dui sem, fermentum vitae, sagittis id, malesuada in, quam. Proin mattis lacinia justo. Vestibulum facilisis auctor urna. Aliquam in lorem sit amet leo accumsan lacinia. Integer rutrum, orci vestibulum ullamcorper ultricies, lacus quam ultricies odio, vitae placerat pede sem sit amet enim. Phasellus et lorem id felis nonummy placerat. Fusce dui leo, imperdiet in, aliquam sit amet, feugiat eu, orci. Aenean vel massa quis mauris vehicula lacinia. Quisque tincidunt scelerisque libero. Maecenas libero. Etiam dictum tincidunt diam. Donec ipsum massa, ullamcorper in, auctor et, scelerisque sed, est. Suspendisse nisl. Sed convallis magna eu sem. Cras pede libero, dapibus nec, pretium sit amet, tempor quis, urna.
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title text-center">
+                <h5>Acesso ao Sistema</h5>
+            </div>
+            <div class="ibox-content">
+                <div>
+                    <form class="form" role="form" ng-submit="vm.login($event)">
+                        <div class="form-group">
+                            <label>Login</label>
+                            <input type="text" class="form-control" id="username"
+                                   placeholder="Usuário" ng-model="vm.username">
+                        </div>
+                        <div class="form-group">
+                            <label>Senha</label>
+                            <input type="password" class="form-control" id="password"
+                                   placeholder="Senha"
+                                   ng-model="vm.password">
+                        </div>
+                        <button type="submit" class="btn btn-info block full-width m-b">
+                            Entrar
+                        </button>
+                    </form>
+
+                    <div class="form-group text-center m-t-md" ng-show="vm.authenticationError">
+                        <div class="alert alert-danger">
+                            Usuário ou senha inválidos
+                        </div>
+                    </div>
+                    <div class="form-group text-center m-t-md">
+                        <span class="text-small text-muted">Ainda não tem acesso?</span>
+                        <a class="btn btn-success btn-block" href="#" ng-click="vm.register()">
+                            Registrar uma nova conta
+                        </a>
+                    </div>
+                    <div class="form-group text-center m-t-md">
+                        <a href="#" ng-click="vm.requestResetPassword()">
+                            <small>Esqueceu a senha?</small>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

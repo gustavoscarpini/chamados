@@ -1,13 +1,13 @@
-(function() {
+(function () {
     'use strict';
 
     angular
         .module('chamadosApp')
         .controller('ActivationController', ActivationController);
 
-    ActivationController.$inject = ['$stateParams', 'Auth', 'LoginService'];
+    ActivationController.$inject = ['$state', '$stateParams', 'Auth'];
 
-    function ActivationController ($stateParams, Auth, LoginService) {
+    function ActivationController($state, $stateParams, Auth) {
         var vm = this;
 
         Auth.activateAccount({key: $stateParams.key}).then(function () {
@@ -18,6 +18,10 @@
             vm.error = 'ERROR';
         });
 
-        vm.login = LoginService.open;
+        vm.login = login;
+
+        function login() {
+            $state.go('login');
+        }
     }
 })();

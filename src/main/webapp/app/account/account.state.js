@@ -10,7 +10,10 @@
     function stateConfig($stateProvider) {
         $stateProvider.state('account', {
             abstract: true,
-            parent: 'app'
+            parent: 'app',
+            data: {
+                specialClass: "work-bg"
+            }
         });
     }
 })();
