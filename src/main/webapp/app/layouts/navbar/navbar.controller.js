@@ -5,9 +5,9 @@
         .module('chamadosApp')
         .controller('NavbarController', NavbarController);
 
-    NavbarController.$inject = ['$state', 'Auth', 'Principal', 'ProfileService', '$scope'];
+    NavbarController.$inject = ['$state', 'Auth', 'Principal', 'ProfileService', '$scope', 'Chamado'];
 
-    function NavbarController($state, Auth, Principal, ProfileService,$scope) {
+    function NavbarController($state, Auth, Principal, ProfileService,$scope, Chamado) {
         var vm = this;
         vm.login = login;
         vm.logout = logout;
@@ -15,7 +15,7 @@
         vm.toggleNavbar = toggleNavbar;
         vm.collapseNavbar = collapseNavbar;
         vm.$state = $state;
-
+        vm.situacoes = Chamado.contarPorSituacao();
 
         vm.isNavbarCollapsed = true;
         vm.isAuthenticated = Principal.isAuthenticated;

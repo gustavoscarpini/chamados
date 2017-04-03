@@ -34,45 +34,19 @@
                 </a>
             </li>
 
-            <li ui-sref-active-eq="active">
-                <a ui-sref="chamado({situacao: 'AGUARDANDO_TESTE'})">
-                    <i class="fa fa-clock-o"></i>
-                    <span class="nav-label">Aguardando Teste</span>
-                </a>
-            </li>
-
-            <li ui-sref-active-eq="active">
-                <a ui-sref="chamado({situacao: 'ABERTO'})">
-                    <i class="fa fa-edit"></i>
-                    <span class="nav-label">Abertos</span>
-                </a>
-            </li>
-
-            <li ui-sref-active-eq="active">
-                <a ui-sref="chamado({situacao: 'EM_SUPORTE'})">
-                    <i class="fa fa-users"></i>
-                    <span class="nav-label">Em Analise</span>
-                </a>
-
-
-            <li ui-sref-active-eq="active">
-                <a ui-sref="chamado({situacao: 'EM_DESENVOLVIMENTO'})">
-                    <i class="fa fa-desktop"></i>
-                    <span class="nav-label">Em Desenvolvimento</span>
-                </a>
-            </li>
-
-            <li ui-sref-active-eq="active">
-                <a ui-sref="chamado({situacao: 'AGUARDANDO_DESENVOLVIMENTO'})">
-                    <i class="fa fa-list"></i>
-                    <span class="nav-label">Fila Desenvolvimento</span>
+            <li ui-sref-active-eq="active" ng-repeat="situacao in vm.situacoes">
+                <a ui-sref="chamado({situacao: situacao.situacaoChamado})">
+                    <i class="small fa fa-circle-o"></i>
+                    <span class="nav-label small" data-translate="{{'chamadosApp.SituacaoChamado.' + situacao.situacaoChamado}}">Aguardando validação</span>
+                    <span ng-if="situacao.quantidade > 0"
+                        class="samll badge badge-danger pull-right">{{situacao.quantidade}}</span>
                 </a>
             </li>
 
             <li ui-sref-active-eq="active">
                 <a ui-sref="chamado({situacao: null})">
                     <i class="fa fa-tasks"></i>
-                    <span class="nav-label">Todos Chamados</span>
+                    <span class="nav-label">Todos chamados</span>
                 </a>
             </li>
 

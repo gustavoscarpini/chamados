@@ -2,9 +2,10 @@
     "chamadosApp": {
         "TipoChamado" : {
             "null": "",
-            "SUPORTE": "SUPORTE",
-            "BUG": "BUG",
-            "MELHORIA": "MELHORIA"
+            "SUPORTE": "Suporte/Ajuda",
+            "BUG": "Bug",
+            "MELHORIA": "Melhoria",
+            "NOVA_FUNCIONALIDADE": "Nova Funcionalidade"
         }
     }
 }

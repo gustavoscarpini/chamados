@@ -1,0 +1,14 @@
+{
+    "chamadosApp": {
+        "SituacaoChamado" : {
+            "null": "",
+            "ABERTO": "Aberto",
+            "IMPEDIDO": "Impedido",
+            "EM_SUPORTE": "Fila de suporte",
+            "EM_DESENVOLVIMENTO": "Em Desenvolvimento",
+            "AGUARDANDO_TESTE": "Aguardando Validação",
+            "FECHADO": "Encerrado",
+            "AGUARDANDO_DESENVOLVIMENTO": "Fila de desenvolvimento"
+        }
+    }
+}

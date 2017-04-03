@@ -34,10 +34,9 @@
             },
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('chamado');
-                    $translatePartialLoader.addPart('tipoChamado');
                     $translatePartialLoader.addPart('global');
                     $translatePartialLoader.addPart('home');
+                    $translatePartialLoader.addPart('situacaoChamado');
                     return $translate.refresh();
                 }],
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {

@@ -9,6 +9,8 @@ import com.chamados.repository.ChamadoRepository;
 import com.chamados.repository.ComentarioRepository;
 import com.chamados.repository.SolicitacaoDesenvolvimentoRepository;
 import com.chamados.security.AuthoritiesConstants;
+import com.chamados.service.dto.ChamadoPorSituacao;
+import com.google.common.collect.Lists;
 import com.taskadapter.redmineapi.RedmineException;
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.RedmineManagerFactory;
@@ -187,6 +189,15 @@ public class ChamadoService {
 
     public Page<Comentario> findAllComentario(Pageable pageable, Long id) {
         return comentarioRepository.findByChamado(pageable, id);
+    }
+
+    public List<ChamadoPorSituacao> contarPorSiuacao() {
+        List<ChamadoPorSituacao> retorno = Lists.newArrayList();
+        for (SituacaoChamado situacaoChamado : SituacaoChamado.values()) {
+            Integer total = chamadoRepository.countBySituacao(situacaoChamado);
+            retorno.add(new ChamadoPorSituacao(situacaoChamado, total));
+        }
+        return retorno;
     }
 
     @Scheduled(cron = "0/15 * * * * ?")

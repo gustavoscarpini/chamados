@@ -49,6 +49,7 @@
                     translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                         $translatePartialLoader.addPart('chamado');
                         $translatePartialLoader.addPart('tipoChamado');
+                        $translatePartialLoader.addPart('situacaoChamado');
                         $translatePartialLoader.addPart('global');
                         return $translate.refresh();
                     }]

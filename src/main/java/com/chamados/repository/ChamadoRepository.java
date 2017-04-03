@@ -14,7 +14,7 @@ import java.util.List;
  * Spring Data JPA repository for the Chamado entity.
  */
 @SuppressWarnings("unused")
-public interface ChamadoRepository extends JpaRepository<Chamado,Long> {
+public interface ChamadoRepository extends JpaRepository<Chamado, Long> {
 
     @Query("select chamado from Chamado chamado where chamado.solicitante.login = ?#{principal.username}")
     List<Chamado> findBySolicitanteIsCurrentUser();
@@ -35,5 +35,10 @@ public interface ChamadoRepository extends JpaRepository<Chamado,Long> {
 
     @Query("select max(chamado.ordem) from Chamado chamado where chamado.situacao in ('ABERTO', 'SUPORTE', 'FILA_DESENVOLVIMENTO')")
     Integer buscarUltimaOrdemDisponivel();
+
+    @Query("select count(chamado.id) from Chamado chamado left join chamado.responsavel resp" +
+        " where (chamado.solicitante.login = ?#{principal.username} or  resp is null or resp.login = ?#{principal.username} )" +
+        " and chamado.situacao = :situacao")
+    Integer countBySituacao(@Param("situacao") SituacaoChamado situacao);
 
 }

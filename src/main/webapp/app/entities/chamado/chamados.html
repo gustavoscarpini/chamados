@@ -29,6 +29,16 @@
                 <div class="ibox-content">
                     <div class="row">
 
+                        <div class="col-md-12 text-center">
+                            <p>
+                                Listando todos os chamados
+                                <span ng-show="vm.situacao">
+                            com a situacao de
+                            <span class="font-bold text-navy"
+                                  data-translate="{{'chamadosApp.SituacaoChamado.' + vm.situacao}}">{{vm.situacao}}</span>
+                        </span>
+                            </p>
+                        </div>
                         <div class="col-md-12">
                             <div class="table-responsive">
                                 <table class="jh-table table table-striped">
@@ -36,11 +46,6 @@
                                     <tr ng-repeat="chamado in vm.chamados track by chamado.id">
                                         <td>
                                             {{chamado.ordem}}
-                                        </td>
-                                        <td>
-                                           <span class="label label-{{vm.getCorPorTipo(chamado.tipoChamado)}}">
-                                            {{chamado.tipoChamado}}
-                                           </span>
                                         </td>
                                         <td class="issue-info">
                                             <a ui-sref="edit-chamado({id:chamado.id})">
@@ -50,12 +55,28 @@
                                                 {{chamado.titulo}}
                                             </small>
                                         </td>
-                                        <td>{{chamado.solicitante.firstName}}</td>
-                                        <td>{{chamado.resposavel.firstName}}</td>
+                                        <td class="issue-info">
+                                            {{chamado.solicitante.firstName}}
+                                            <small>
+                                                {{chamado.responsavel.firstName}}
+                                            </small>
+                                        </td>
                                         <td>{{chamado.criadoEm | date:'mediumDate'}}</td>
                                         <td>
                                             <i ng-if="chamado.tempoEstimado" class="fa fa-clock-o"></i>
                                             {{chamado.tempoEstimado}}
+                                        </td>
+                                        <td>
+                                            {{chamado.modulo.descricao}}
+                                        </td>
+                                        <td>
+                                            <span
+                                                data-translate="{{'chamadosApp.SituacaoChamado.' + chamado.situacao}}">{{chamado.situacao}}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="small label label-{{vm.getCorPorTipo(chamado.tipoChamado)}}">
+                                            <span data-translate="{{'chamadosApp.TipoChamado.' + chamado.tipoChamado}}">{{chamado.tipoChamado}}</span>
+                                           </span>
                                         </td>
                                         <td class="text-right">
                                             <button type="submit"

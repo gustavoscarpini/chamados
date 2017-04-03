@@ -51,6 +51,11 @@
                     return covertData(data);
                 }
             },
+            'contarPorSituacao': {
+                method: 'GET',
+                url: 'api/countar-por-situacao',
+                isArray: true
+            },
             'criar': {
                 method: 'GET',
                 url: 'api/chamados-criar',

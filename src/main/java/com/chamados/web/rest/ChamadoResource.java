@@ -7,6 +7,7 @@ import com.chamados.domain.enumeration.SituacaoChamado;
 import com.chamados.security.AuthoritiesConstants;
 import com.chamados.service.ChamadoService;
 import com.chamados.service.UserService;
+import com.chamados.service.dto.ChamadoPorSituacao;
 import com.chamados.web.rest.util.HeaderUtil;
 import com.chamados.web.rest.util.PaginationUtil;
 import com.codahale.metrics.annotation.Timed;
@@ -166,6 +167,15 @@ public class ChamadoResource {
         throws URISyntaxException {
         log.debug("REST request to get a page of Chamados");
         return new ResponseEntity<>(Lists.newArrayList(SituacaoChamado.values()), HttpStatus.OK);
+    }
+
+
+    @GetMapping("/countar-por-situacao")
+    @Timed
+    public ResponseEntity<List<ChamadoPorSituacao>> contarPorSituacoes()
+        throws URISyntaxException {
+        log.debug("REST request to get a page of Chamados");
+        return new ResponseEntity<>(chamadoService.contarPorSiuacao(), HttpStatus.OK);
     }
 
 

@@ -4,7 +4,7 @@
             <div class="ibox-title">
                 {{vm.chamado.id ? 'Editando Chamado' :'Novo Chamado'}}
                 <div class="ibox-tools">
-                    <span class="label label-info">{{vm.chamado.situacao}}</span>
+                    <span class="label label-info" data-translate="{{'chamadosApp.SituacaoChamado.' + vm.chamado.situacao}}" >{{vm.chamado.situacao}}</span>
                 </div>
             </div>
             <div class="ibox-content">
