@@ -3,6 +3,7 @@ package com.chamados.repository;
 import com.chamados.domain.Chamado;
 import com.chamados.domain.SolicitacaoDesenvolvimento;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -14,4 +15,7 @@ public interface SolicitacaoDesenvolvimentoRepository extends JpaRepository<Soli
 
 
     List<SolicitacaoDesenvolvimento> findAllByChamado(Chamado chamado);
+
+    @Query("select sol from SolicitacaoDesenvolvimento sol where sol.chamado.situacao in ('AGUARDANDO_DESENVOLVIMENTO', 'EM_DESENVOLVIMENTO')")
+    List<SolicitacaoDesenvolvimento> findAllEmDesenvolvimento();
 }

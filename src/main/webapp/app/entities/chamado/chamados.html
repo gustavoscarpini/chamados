@@ -19,6 +19,12 @@
             <div class="ibox">
                 <div class="ibox-title">
                     Sua Lista de Chamados
+                    <div class="ibox-tools">
+                        <a ui-sref="new-chamado" class="btn btn-primary btn-xs">
+                            <span class="glyphicon glyphicon-plus"></span>
+                            <span class="hidden-sm">Novo Chamado</span>
+                        </a>
+                    </div>
                 </div>
                 <div class="ibox-content">
                     <div class="row">
@@ -29,16 +35,7 @@
                                     <tbody>
                                     <tr ng-repeat="chamado in vm.chamados track by chamado.id">
                                         <td>
-                                            <div class="vote-actions">
-                                                <a href="#">
-                                                    <i class="fa fa-chevron-up"> </i>
-                                                </a>
-                                                <div>{{chamado.ordem}}</div>
-                                                <a href="#">
-                                                    <i class="fa fa-chevron-down"> </i>
-                                                </a>
-                                            </div>
-
+                                            {{chamado.ordem}}
                                         </td>
                                         <td>
                                            <span class="label label-{{vm.getCorPorTipo(chamado.tipoChamado)}}">
@@ -47,7 +44,7 @@
                                         </td>
                                         <td class="issue-info">
                                             <a ui-sref="edit-chamado({id:chamado.id})">
-                                                CH-{{chamado.id}}
+                                                #{{chamado.id}}
                                             </a>
                                             <small>
                                                 {{chamado.titulo}}
@@ -58,69 +55,14 @@
                                         <td>{{chamado.criadoEm | date:'mediumDate'}}</td>
                                         <td>
                                             <i ng-if="chamado.tempoEstimado" class="fa fa-clock-o"></i>
-                                            <span ng-if="!chamado.tempoEstimado" class="label label-warning">
-                                                        Aguardando P.O.
-                                                    </span>
                                             {{chamado.tempoEstimado}}
                                         </td>
                                         <td class="text-right">
-
                                             <button type="submit"
-                                                    ng-show="chamado.situacao != 'ABERTO' &&  vm.account.id == chamado.solicitante.id"
                                                     ui-sref="edit-chamado({id:chamado.id})"
                                                     class="btn btn-primary btn-sm">
-                                                <span class="glyphicon glyphicon-pencil"></span>
-                                                <span class="hidden-sm-down"
-                                                      data-translate="entity.action.edit"></span>
-                                            </button>
-
-                                            <button type="submit"
-                                                    has-authority="ROLE_ATENDENTE"
-                                                    ng-show="chamado.situacao == 'ABERTO'"
-                                                    ui-sref="edit-chamado({id:chamado.id})"
-                                                    class="btn btn-success btn-sm">
-                                                <span class="glyphicon glyphicon-check"></span>
-                                                <span class="hidden-sm-down"> Aceitar </span>
-                                            </button>
-
-                                            <button type="submit"
-                                                    ng-show="chamado.situacao == 'TESTE'"
-                                                    ui-sref="edit-chamado({id:chamado.id})"
-                                                    class="btn btn-success btn-sm">
-                                                <span class="glyphicon glyphicon-check"></span>
-                                                <span class="hidden-sm-down"> Validar </span>
-                                            </button>
-
-                                            <button type="submit"
-                                                    ng-show="chamado.situacao == 'TESTE'"
-                                                    ng-click="vm.rejeitar()"
-                                                    class="btn btn-danger btn-sm">
-                                                <span class="glyphicon glyphicon-warning-sign"></span>
-                                                <span class="hidden-sm-down"> Rejeitar </span>
-                                            </button>
-
-                                            <button type="submit"
-                                                    ng-show="chamado.situacao == 'SUPORTE'"
-                                                    ui-sref="edit-chamado({id:chamado.id})"
-                                                    class="btn btn-success btn-sm">
-                                                <span class="glyphicon glyphicon-check"></span>
-                                                <span class="hidden-sm-down"> Concluir </span>
-                                            </button>
-
-                                            <button type="submit"
-                                                    ng-show="chamado.situacao == 'SUPORTE'"
-                                                    ui-sref="edit-chamado({id:chamado.id})"
-                                                    class="btn btn-warning btn-sm">
-                                                <span class="glyphicon glyphicon-console"></span>
-                                                <span class="hidden-sm-down"> Encaminar </span>
-                                            </button>
-
-                                            <button type="submit"
-                                                    ng-show="chamado.situacao == 'SUPORTE'"
-                                                    ui-sref="edit-chamado({id:chamado.id})"
-                                                    class="btn btn-danger btn-sm">
-                                                <span class="glyphicon glyphicon-warning-sign"></span>
-                                                <span class="hidden-sm-down"> Devolver </span>
+                                                <span class="fa fa-eye"></span>
+                                                <span class="hidden-sm-down">Ver</span>
                                             </button>
                                         </td>
                                     </tr>

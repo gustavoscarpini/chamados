@@ -1,10 +1,12 @@
 package com.chamados.service;
 
 import com.chamados.domain.Chamado;
+import com.chamados.domain.Comentario;
 import com.chamados.domain.SolicitacaoDesenvolvimento;
 import com.chamados.domain.User;
 import com.chamados.domain.enumeration.SituacaoChamado;
 import com.chamados.repository.ChamadoRepository;
+import com.chamados.repository.ComentarioRepository;
 import com.chamados.repository.SolicitacaoDesenvolvimentoRepository;
 import com.chamados.security.AuthoritiesConstants;
 import com.taskadapter.redmineapi.RedmineException;
@@ -16,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,15 +39,18 @@ public class ChamadoService {
     private final Logger log = LoggerFactory.getLogger(ChamadoService.class);
 
     private final ChamadoRepository chamadoRepository;
+    private final ComentarioRepository comentarioRepository;
     private final SolicitacaoDesenvolvimentoRepository solicitacaoDesenvolvimentoRepository;
     private final UserService userService;
 
     public ChamadoService(ChamadoRepository chamadoRepository,
+                          ComentarioRepository comentarioRepository,
                           SolicitacaoDesenvolvimentoRepository solicitacaoDesenvolvimentoRepository,
                           UserService userService) {
         this.chamadoRepository = chamadoRepository;
         this.solicitacaoDesenvolvimentoRepository = solicitacaoDesenvolvimentoRepository;
         this.userService = userService;
+        this.comentarioRepository = comentarioRepository;
     }
 
     /**
@@ -101,23 +107,23 @@ public class ChamadoService {
     public static final SimpleDateFormat formatDataOrigem = new SimpleDateFormat("yyyy-MM-dd");
     public static final SimpleDateFormat formatDataBarras = new SimpleDateFormat("dd/MM/yyyy");
 
-    public void solicitarDesenvolvimento(Chamado chamado) throws RedmineException {
+    public void solicitarDesenvolvimento(SolicitacaoDesenvolvimento solicitacao) throws RedmineException {
         RedmineManager menager = RedmineManagerFactory.createWithUserAuth(URI, ORTS_REDMINE_USER, ORTS_REDMINE_PASSWORD);
         Issue modelo = menager.getIssueManager().getIssueById(18513);
         Issue issue = new Issue();
         issue.setProjectId(6);
         issue.setStatusId(1);
         issue.setTracker(modelo.getTracker());
-        issue.setSubject(chamado.getTitulo());
-        issue.setDescription(chamado.getConteudo());
+        issue.setSubject(solicitacao.getChamado().getTitulo());
+        issue.setDescription(solicitacao.getConteudo());
         issue.setTargetVersion(modelo.getTargetVersion());
 
-        issue.addCustomField(getCustomField(modelo, 15, chamado.getSolicitante().getFirstName()));
-        issue.addCustomField(getCustomField(modelo, 23, chamado.getId().toString()));
-        issue.addCustomField(getCustomField(modelo, 24, "Bug - Baixa - 20 dias úteis"));
+        issue.addCustomField(getCustomField(modelo, 15, solicitacao.getChamado().getSolicitante().getFirstName()));
+        issue.addCustomField(getCustomField(modelo, 23, solicitacao.getChamado().getId().toString()));
+        issue.addCustomField(getCustomField(modelo, 24, solicitacao.getTipoSla()));
         issue.addCustomField(getCustomField(modelo, 8, "Geral"));
         issue.addCustomField(getCustomField(modelo, 7, "1"));
-        issue.addCustomField(getCustomField(modelo, 5, "*"));
+        issue.addCustomField(getCustomField(modelo, 5, solicitacao.getCriterio()));
 
         CustomField dataSolicitacao = modelo.getCustomFieldById(14);
         dataSolicitacao.setValue(formatDataOrigem.format(new Date()));
@@ -130,12 +136,14 @@ public class ChamadoService {
         issue = menager.getIssueManager().createIssue(issue);
         log.info("=========> Criado a ISSUE " + issue.getId());
 
-        SolicitacaoDesenvolvimento solicitacaoDesenvolvimento = new SolicitacaoDesenvolvimento();
-        solicitacaoDesenvolvimento.setNumero(issue.getId());
-        solicitacaoDesenvolvimento.setChamado(chamado);
-        solicitacaoDesenvolvimento.setSituacao(issue.getStatusName());
+        solicitacao.setNumero(issue.getId());
+        solicitacao.setSituacao(issue.getStatusName());
 
-        solicitacaoDesenvolvimentoRepository.save(solicitacaoDesenvolvimento);
+        solicitacaoDesenvolvimentoRepository.save(solicitacao);
+
+        Chamado chamado = solicitacao.getChamado();
+        chamado.setSituacao(SituacaoChamado.AGUARDANDO_DESENVOLVIMENTO);
+        save(chamado);
 
     }
 
@@ -156,11 +164,12 @@ public class ChamadoService {
         User user = userService.getUserWithAuthorities();
         List<String> authorities = user.getAuthorities().stream().map(authority -> authority.getName())
             .collect(Collectors.toList());
-        if(authorities.contains(AuthoritiesConstants.CLIENTE)){
+        log.error("------>>> {}", authorities);
+        if (authorities.contains(AuthoritiesConstants.CLIENTE)) {
             return chamadoRepository.findAllBySituacaoAndSolicitante(pageable, situacao);
         }
-        if(authorities.contains(AuthoritiesConstants.ATENDENTE)){
-            if(SituacaoChamado.ABERTO.equals(situacao)){
+        if (authorities.contains(AuthoritiesConstants.ATENDENTE)) {
+            if (SituacaoChamado.ABERTO.equals(situacao)) {
                 return chamadoRepository.findAllAbertosDisponiveis(pageable);
             }
             return chamadoRepository.findAllBySituacaoAndAtendente(pageable, situacao);
@@ -170,5 +179,37 @@ public class ChamadoService {
 
     public Integer buscarUltimaOrdemDisponivel() {
         return chamadoRepository.buscarUltimaOrdemDisponivel();
+    }
+
+    public Comentario comentar(Comentario comentario) {
+        return comentarioRepository.save(comentario);
+    }
+
+    public Page<Comentario> findAllComentario(Pageable pageable, Long id) {
+        return comentarioRepository.findByChamado(pageable, id);
+    }
+
+    @Scheduled(cron = "0/15 * * * * ?")
+    public void atualizarSolicitacoesDesenvolvimento() {
+        RedmineManager menager = RedmineManagerFactory.createWithUserAuth(URI, ORTS_REDMINE_USER, ORTS_REDMINE_PASSWORD);
+        List<SolicitacaoDesenvolvimento> solitacoes = solicitacaoDesenvolvimentoRepository.findAllEmDesenvolvimento();
+        for (SolicitacaoDesenvolvimento solicitacao : solitacoes) {
+            try {
+                Issue ticket = menager.getIssueManager().getIssueById(solicitacao.getNumero());
+
+
+                if(!ticket.getStatusName().equals(solicitacao.getSituacao())
+                    && solicitacao.getChamado().getSituacao().equals(SituacaoChamado.AGUARDANDO_DESENVOLVIMENTO)){
+                    Chamado chamado = solicitacao.getChamado();
+                    chamado.setSituacao(SituacaoChamado.EM_DESENVOLVIMENTO);
+                    save(chamado);
+                }
+                solicitacao.setSituacao(ticket.getStatusName());
+                solicitacaoDesenvolvimentoRepository.save(solicitacao);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 }

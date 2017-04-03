@@ -56,7 +56,7 @@
             })
             .state('new-chamado', {
                 parent: 'chamado',
-                url: 'chamado-new',
+                url: '/chamado-new',
                 data: {
                     authorities: ['ROLE_ATENDENTE', 'ROLE_CLIENTE'],
                 },
@@ -88,7 +88,7 @@
             })
             .state('edit-chamado', {
                 parent: 'chamado',
-                url: 'chamado-edit/{id}',
+                url: '/chamado-edit/{id}',
                 data: {
                     authorities: ['ROLE_ATENDENTE', 'ROLE_CLIENTE'],
                 },
@@ -120,7 +120,7 @@
             })
             .state('delete-chamado', {
                 parent: 'chamado',
-                url: 'chamado-delete/{id}',
+                url: '/chamado-delete/{id}',
                 data: {
                     authorities: ['ROLE_ATENDENTE', 'ROLE_CLIENTE'],
                 },

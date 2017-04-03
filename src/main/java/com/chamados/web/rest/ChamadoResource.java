@@ -1,8 +1,10 @@
 package com.chamados.web.rest;
 
 import com.chamados.domain.Chamado;
+import com.chamados.domain.Comentario;
 import com.chamados.domain.SolicitacaoDesenvolvimento;
 import com.chamados.domain.enumeration.SituacaoChamado;
+import com.chamados.security.AuthoritiesConstants;
 import com.chamados.service.ChamadoService;
 import com.chamados.service.UserService;
 import com.chamados.web.rest.util.HeaderUtil;
@@ -19,12 +21,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,11 +73,24 @@ public class ChamadoResource {
 
     @PostMapping("/chamados-aceitar")
     @Timed
+    @Secured(AuthoritiesConstants.ATENDENTE)
     public ResponseEntity<Chamado> aceitarChamado(@Valid @RequestBody Chamado chamado) throws URISyntaxException {
         log.debug("REST request to aceitar Chamado : {}", chamado);
         chamado.setResponsavel(userService.getUserWithAuthorities());
-        chamado.setSituacao(SituacaoChamado.SUPORTE);
+        chamado.setSituacao(SituacaoChamado.EM_SUPORTE);
         Chamado result = chamadoService.save(chamado);
+        return ResponseEntity.created(new URI("/api/chamados/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
+
+
+    @PostMapping("/chamados-comentar")
+    @Timed
+    public ResponseEntity<Comentario> comentarChamado(@Valid @RequestBody Comentario comentario) throws URISyntaxException {
+        comentario.setUsuario(userService.getUserWithAuthorities());
+        comentario.setCriadoEm(LocalDateTime.now());
+        Comentario result = chamadoService.comentar(comentario);
         return ResponseEntity.created(new URI("/api/chamados/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -130,8 +147,21 @@ public class ChamadoResource {
     }
 
 
+    @GetMapping("/comentarios/{id}")
+    @Timed
+    public ResponseEntity<List<Comentario>> getAllComentario(@ApiParam Pageable pageable,
+                                                             @PathVariable Long id)
+        throws URISyntaxException {
+        log.debug("REST request to get a page of Chamados");
+        Page<Comentario> page = chamadoService.findAllComentario(pageable, id);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/comentarios");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+
     @GetMapping("/situacoes")
     @Timed
+    @Secured(AuthoritiesConstants.ATENDENTE)
     public ResponseEntity<List<SituacaoChamado>> getAllSituacoes()
         throws URISyntaxException {
         log.debug("REST request to get a page of Chamados");
@@ -141,6 +171,7 @@ public class ChamadoResource {
 
     @GetMapping("/solicitacoes/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ATENDENTE)
     public ResponseEntity<List<SolicitacaoDesenvolvimento>> getAllSolicitacoes(@PathVariable Long id) {
         List<SolicitacaoDesenvolvimento> retorno = Lists.newArrayList();
         try {
@@ -188,6 +219,7 @@ public class ChamadoResource {
      */
     @DeleteMapping("/chamados/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ATENDENTE)
     public ResponseEntity<Void> deleteChamado(@PathVariable Long id) {
         log.debug("REST request to delete Chamado : {}", id);
         chamadoService.delete(id);
@@ -196,10 +228,11 @@ public class ChamadoResource {
 
     @PostMapping("/soliciar-desenvolvimento")
     @Timed
-    public ResponseEntity<Void> solicitarDesenvolvimento(@Valid @RequestBody Chamado chamado) {
+    @Secured(AuthoritiesConstants.ATENDENTE)
+    public ResponseEntity<Void> solicitarDesenvolvimento(@RequestBody SolicitacaoDesenvolvimento solicitacao) {
         try {
-            chamadoService.solicitarDesenvolvimento(chamado);
-            return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, chamado.toString())).build();
+            chamadoService.solicitarDesenvolvimento(solicitacao);
+            return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, solicitacao.toString())).build();
         } catch (RedmineException e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, e.getMessage())).build();

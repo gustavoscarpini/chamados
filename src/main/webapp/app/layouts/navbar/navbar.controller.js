@@ -5,14 +5,11 @@
         .module('chamadosApp')
         .controller('NavbarController', NavbarController);
 
-    NavbarController.$inject = ['$state', 'Auth', 'Principal', 'ProfileService'];
+    NavbarController.$inject = ['$state', 'Auth', 'Principal', 'ProfileService', '$scope'];
 
-    function NavbarController($state, Auth, Principal, ProfileService) {
+    function NavbarController($state, Auth, Principal, ProfileService,$scope) {
         var vm = this;
-
-
         vm.login = login;
-
         vm.logout = logout;
 
         vm.toggleNavbar = toggleNavbar;
@@ -35,6 +32,11 @@
         }
 
         getAccount();
+
+        $scope.$on('authenticationSuccess', function () {
+            getAccount();
+        });
+
         function login() {
             collapseNavbar();
             $state.go('login');

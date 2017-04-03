@@ -21,7 +21,6 @@
         vm.itemsPerPage = paginationConstants.itemsPerPage;
         vm.situacao = pagingParams.situacao;
         vm.loadAll = loadAll;
-        vm.rejeitar = rejeitar;
         vm.getCorPorTipo = getCorPorTipo;
 
         $scope.$on('authenticationSuccess', function () {
@@ -98,15 +97,7 @@
             $state.go('register');
         }
 
-        function rejeitar() {
-            var modalInstance = $uibModal.open({
-                ariaLabelledBy: 'modal-title',
-                ariaDescribedBy: 'modal-body',
-                templateUrl: 'myModalContent.html',
-                controller: 'ModalInstanceCtrl',
-                controllerAs: 'vm'
-            });
-        };
+
 
         function getCorPorTipo(tipo) {
             switch (tipo) {
@@ -123,23 +114,4 @@
             }
         }
     }
-
-
-    angular
-        .module('chamadosApp')
-        .controller('ModalInstanceCtrl', ModalInstanceCtrl);
-
-    ModalInstanceCtrl.$inject = ['$uibModalInstance'];
-
-    function ModalInstanceCtrl($uibModalInstance) {
-        var vm = this;
-
-        vm.ok = function () {
-            $uibModalInstance.close();
-        };
-
-        vm.cancel = function () {
-            $uibModalInstance.dismiss('cancel');
-        };
-    };
 })();

@@ -35,6 +35,21 @@ public class SolicitacaoDesenvolvimento implements Serializable {
     @ManyToOne
     private Chamado chamado;
 
+    @NotNull
+    @Size(min = 2, max = 255)
+    @Column(name = "tipo_sla", length = 255, nullable = false)
+    private String tipoSla;
+
+    @NotNull
+    @Size(min = 2, max = 3000)
+    @Column(name = "conteudo", length = 3000, nullable = false)
+    private String conteudo;
+
+    @NotNull
+    @Size(min = 2, max = 3000)
+    @Column(name = "criterio", length = 3000, nullable = false)
+    private String criterio;
+
 
     public Long getId() {
         return id;
@@ -66,6 +81,30 @@ public class SolicitacaoDesenvolvimento implements Serializable {
 
     public void setChamado(Chamado chamado) {
         this.chamado = chamado;
+    }
+
+    public String getTipoSla() {
+        return tipoSla;
+    }
+
+    public void setTipoSla(String tipoSla) {
+        this.tipoSla = tipoSla;
+    }
+
+    public String getConteudo() {
+        return conteudo;
+    }
+
+    public void setConteudo(String conteudo) {
+        this.conteudo = conteudo;
+    }
+
+    public String getCriterio() {
+        return criterio;
+    }
+
+    public void setCriterio(String criterio) {
+        this.criterio = criterio;
     }
 
     @Override

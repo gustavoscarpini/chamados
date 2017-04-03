@@ -100,4 +100,12 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="20170211214039-6" author="scarpini">
+        <addColumn tableName="solicitacaodesenvolvimento">
+            <column name="tipo_sla" type="varchar(255)" />
+            <column name="conteudo" type="varchar(3000)" />
+            <column name="criterio" type="varchar(3000)" />
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

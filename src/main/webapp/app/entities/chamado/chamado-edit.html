@@ -1,4 +1,4 @@
-<div class="row" >
+<div class="row">
     <div class="col-lg-12">
         <div class="ibox">
             <div class="ibox-title">
@@ -10,9 +10,6 @@
             <div class="ibox-content">
                 <div class="row">
                     <form name="editForm" role="form" novalidate ng-submit="vm.save()" show-validation>
-
-
-                        <jhi-alert-error></jhi-alert-error>
 
                         <div class="form-group col-md-12" ng-show="vm.chamado.id">
                             <label for="id" data-translate="global.field.id">ID</label>
@@ -150,26 +147,12 @@
                             </div>
                         </div>
 
-                        <div class="form-group col-md-4 col-md-offset-4" ng-show="vm.solicitacoes.length > 0">
-                            <label for="listaTickets">Tickets em Desenvolvimento</label>
-                            <ul id="listaTickets" class="list-group">
-                                <li class="list-group-item" ng-repeat="solicitacao in vm.solicitacoes">
-                                    <a href="http://redmine.webpublico.com.br/issues/{{solicitacao.numero}}"
-                                       target="_blank">
-                                        {{solicitacao.numero}}
-                                    </a>
-                                    <span class="label label-info pull-right"> {{solicitacao.situacao}} </span>
-                                </li>
-                            </ul>
-                        </div>
-
-
                         <div class="form-group col-md-12 text-center">
                             <button type="button" class="btn btn-default" data-dismiss="modal"
                                     ui-sref="{{ vm.previousState }}">
-                                <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span
-                                data-translate="entity.action.cancel">Cancel</span>
+                                <span class="fa fa-ban"></span>&nbsp;<span>Voltar</span>
                             </button>
+
                             <button type="submit"
                                     ng-show="vm.chamado.situacao == 'ABERTO' && vm.account.id == vm.chamado.solicitante.id"
                                     ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
@@ -177,38 +160,241 @@
                                 &nbsp;<span>Salvar</span>
                             </button>
 
-
                             <button type="button"
                                     has-authority="ROLE_ATENDENTE"
                                     ng-show="vm.chamado.id && vm.chamado.situacao == 'ABERTO'"
                                     ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary"
                                     ng-click="vm.aceitar()">
-                                <i class="fa fa-save"></i>
+                                <i class="fa fa-check"></i>
                                 &nbsp;<span>Aceitar</span>
                             </button>
 
                             <button type="button"
                                     has-authority="ROLE_ATENDENTE"
-                                    ng-show="vm.chamado.id && vm.chamado.situacao == 'ABERTO'"
-                                    ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-danger">
-                                <i class="fa fa-save"></i>
-                                &nbsp;<span>Rejeitar</span>
+                                    ng-show="vm.chamado.situacao == 'EM_SUPORTE'"
+                                    ng-click="vm.solicitarDesenvolvimento()"
+                                    ng-disabled="editForm.$invalid || vm.isSaving || !vm.chamado.id"
+                                    class="btn btn-success">
+                                <span class="glyphicon glyphicon-console"></span>&nbsp;Solicitar Desenvolvimento
                             </button>
-
 
                             <button type="button"
                                     has-authority="ROLE_ATENDENTE"
-                                    ng-show="vm.chamado.situacao == 'SUPORTE'"
-                                    ng-click="vm.solicitarDesenvolvimento()"
+                                    ng-show="vm.chamado.situacao != 'ABERTO' && vm.chamado.situacao != 'IMPEDIDO'"
+                                    ng-click="vm.impedir()"
                                     ng-disabled="editForm.$invalid || vm.isSaving || !vm.chamado.id"
                                     class="btn btn-warning">
-                                <span class="glyphicon glyphicon-console"></span>&nbsp;Solicitar Desenvolvimento
+                                <span class="fa fa-warning"></span>&nbsp;Impedir!
+                            </button>
+
+                            <button type="button"
+                                    has-authority="ROLE_ATENDENTE"
+                                    ng-show="vm.chamado.situacao == 'IMPEDIDO'"
+                                    ng-click="vm.impedir()"
+                                    ng-disabled="editForm.$invalid || vm.isSaving || !vm.chamado.id"
+                                    class="btn btn-warning">
+                                <span class="fa fa-warning"></span>&nbsp;Re-Abrir!
+                            </button>
+
+                            <button type="button"
+                                    has-authority="ROLE_ATENDENTE"
+                                    ng-show="vm.chamado.situacao == 'EM_DESENVOLVIMENTO'"
+                                    ng-click="vm.liberarTeste()"
+                                    ng-disabled="editForm.$invalid || vm.isSaving || !vm.chamado.id"
+                                    class="btn btn-success">
+                                <span class="fa fa-user"></span>&nbsp;Encaminhar para teste
+                            </button>
+
+                            <button type="button"
+                                    ng-show="vm.chamado.situacao == 'AGUARDANDO_TESTE'"
+                                    ng-click="vm.validar()"
+                                    ng-disabled="editForm.$invalid || vm.isSaving || !vm.chamado.id"
+                                    class="btn btn-primary">
+                                <span class="fa fa-check"></span>&nbsp;Validar
+                            </button>
+
+                            <button type="button"
+                                    ng-show="vm.chamado.situacao == 'AGUARDANDO_TESTE'"
+                                    ng-click="vm.rejeitar()"
+                                    ng-disabled="editForm.$invalid || vm.isSaving || !vm.chamado.id"
+                                    class="btn btn-danger">
+                                <span class="fa fa-warning"></span>&nbsp;Rejeitar
                             </button>
                         </div>
                     </form>
+
                 </div>
             </div>
         </div>
+
+
+        <div class="ibox" ng-show="vm.chamado.id">
+            <div class="ibox-content">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="{{vm.solicitacoes.length > 0 ?  'col-md-8':'col-md-12'}}">
+                            <div>
+                                <h3>Comentários</h3>
+                                <div class="chat-activity-list">
+                                    <div
+                                        class="chat-element {{comentario.usuario.id == vm.chamado.solicitante.id? '' : 'right'}}"
+                                        ng-repeat="comentario in vm.comentarios">
+                                        <a href="#"
+                                           class="{{comentario.usuario.id == vm.chamado.solicitante.id? 'pull-left' : 'pull-right'}}">
+                                            <img alt="image" class="img-circle" ng-src="/content/images/mayka.PNG">
+                                        </a>
+                                        <div
+                                            class="media-body {{comentario.usuario.id == vm.chamado.solicitante.id? '' : 'text-right'}}">
+                                            <small
+                                                class="{{comentario.usuario.id != vm.chamado.solicitante.id? 'pull-left' : 'pull-right'}} text-navy">
+                                                {{comentario.criadoEm | timeAgo}}
+                                            </small>
+                                            <strong>{{comentario.usuario.firstName}}</strong>
+                                            <p class="m-b-xs">
+                                                {{comentario.descricao}}
+                                            </p>
+                                            <small class="text-muted">
+                                                {{comentario.criadoEm | date:"MM/dd/yyyy 'as' h:mm a"}}
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="chat-form">
+                                <form role="form">
+                                    <div class="form-group">
+                                          <textarea type="text" class="form-control"
+                                                    name="comentario" id="field_comentario"
+                                                    ng-model="vm.comentario.descricao"
+                                                    ng-minlength="2" ng-maxlength="3000"></textarea>
+                                    </div>
+                                    <div class="text-right">
+                                        <button type="button"
+                                                ng-click="vm.comentar()"
+                                                class="btn btn-sm btn-primary m-t-n-xs">
+                                <span class="fa fa-comments-o">
+                                </span>&nbsp;<span>Comentar</span>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-md-4" ng-show="vm.solicitacoes.length > 0">
+                            <h3>Tickets em Desenvolvimento</h3>
+                            <ul id="listaTickets" class="list-group">
+                                <li class="list-group-item" ng-repeat="solicitacao in vm.solicitacoes">
+                                    <a href="http://redmine.webpublico.com.br/issues/{{solicitacao.numero}}"
+                                       target="_blank">
+                                        #{{solicitacao.numero}}
+                                    </a>
+                                    <span class="label label-info pull-right"> {{solicitacao.situacao}} </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
     </div>
 </div>
 
+<script type="text/ng-template" id="myModalContent.html">
+    <div class="modal-header">
+        <h3 class="modal-title" id="modal-title">Solicitação de desenvolvimento</h3>
+    </div>
+    <div class="modal-body" id="modal-body">
+        <div class="alert alert-warning">Tem certeza que deseja encaminhar esse chamado para desenvolvimento?</div>
+
+        <form name="editFormSolicitacao" role="form" novalidate show-validation>
+            <div class="form-group">
+                <label class="control-label" for="field_tipoChamado"> Tipo de Serviço e SLA </label>
+                <select class="form-control"
+                        name="tipoSLA" ng-model="vm.solicitacaoDesenvolvimento.tipoSla" id="tipoSla"
+                        required>
+                    <option value="Bug - Alta - 1 dia útil">Bug - Alta - 1 dia útil</option>
+                    <option value="Bug - Média - 10 dias úteis">Bug - Média - 10 dias úteis</option>
+                    <option value="Bug - Baixa - 20 dias úteis">Bug - Baixa - 20 dias úteis</option>
+                    <option value="Melhoria - Alta - 15 dias úteis">Melhoria - Alta - 15 dias úteis</option>
+                    <option value="Melhoria - Média - 40 dias úteis">Melhoria - Média - 40 dias úteis</option>
+                    <option value="Melhoria - Baixa - 60 dias úteis">Melhoria - Baixa - 60 dias úteis</option>
+                </select>
+                <div ng-show="editFormSolicitacao.tipoSLA.$invalid">
+                    <p class="help-block"
+                       ng-show="editFormSolicitacao.tipoSLA.$error.required"
+                       data-translate="entity.validation.required">
+                        This field is required.
+                    </p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="field_conteudo_socilitacao">Conteudo</label>
+                <textarea type="text" class="form-control"
+                          name="conteudo" id="field_conteudo_socilitacao"
+                          ng-model="vm.solicitacaoDesenvolvimento.conteudo"
+                          required ng-minlength="2" ng-maxlength="3000"></textarea>
+                <div ng-show="editFormSolicitacao.conteudo.$invalid">
+                    <p class="help-block"
+                       ng-show="editFormSolicitacao.conteudo.$error.required"
+                       data-translate="entity.validation.required">
+                        This field is required.
+                    </p>
+                    <p class="help-block"
+                       ng-show="editFormSolicitacao.conteudo.$error.minlength"
+                       data-translate="entity.validation.minlength"
+                       translate-value-min="2">
+                        This field is required to be at least 2 characters.
+                    </p>
+                    <p class="help-block"
+                       ng-show="editFormSolicitacao.conteudo.$error.maxlength"
+                       data-translate="entity.validation.maxlength"
+                       translate-value-max="3000">
+                        This field cannot be longer than 3000 characters.
+                    </p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="field_criterio_socilitacao">Critério de Validação</label>
+                <textarea type="text" class="form-control"
+                          name="criterio" id="field_criterio_socilitacao"
+                          ng-model="vm.solicitacaoDesenvolvimento.criterio"
+                          required ng-minlength="2" ng-maxlength="3000"></textarea>
+                <div ng-show="editFormSolicitacao.criterio.$invalid">
+                    <p class="help-block"
+                       ng-show="editFormSolicitacao.criterio.$error.required"
+                       data-translate="entity.validation.required">
+                        This field is required.
+                    </p>
+                    <p class="help-block"
+                       ng-show="editFormSolicitacao.criterio.$error.minlength"
+                       data-translate="entity.validation.minlength"
+                       translate-value-min="2">
+                        This field is required to be at least 2 characters.
+                    </p>
+                    <p class="help-block"
+                       ng-show="editFormSolicitacao.criterio.$error.maxlength"
+                       data-translate="entity.validation.maxlength"
+                       translate-value-max="3000">
+                        This field cannot be longer than 3000 characters.
+                    </p>
+                </div>
+            </div>
+        </form>
+
+
+        <div class="alert alert-warning">O chamado irá cair na fila para desenvolvimento de acordo com sua ordem já
+            estabelecida
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-default" type="button" ng-click="vm.cancel()">
+            <i class="fa fa-ban"/>
+            Cancelar
+        </button>
+        <button class="btn btn-success" type="button" ng-click="vm.ok()">
+            <i class="fa fa-desktop"></i>
+            Encaminhar
+        </button>
+    </div>
+</script>
