@@ -37,6 +37,7 @@
                     $translatePartialLoader.addPart('global');
                     $translatePartialLoader.addPart('home');
                     $translatePartialLoader.addPart('situacaoChamado');
+                    $translatePartialLoader.addPart('tipoChamado');
                     return $translate.refresh();
                 }],
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {

@@ -8,6 +8,14 @@
                 </div>
             </div>
             <div class="ibox-content">
+                <div class="row" ng-if="!vm.chamado.id">
+                    <div class="col-md-12 text-center alert alert-info text-small">
+                        <strong>Fique atento!</strong><br/>
+                        A ordem é sugerida com base no ultimo chamado criado que ainda não está em desenvolvimento.<br/>
+                        Ao altera-la todos os chamados que estão 'Abertos', 'Fila de Suporte' e 'Fila de desenvolvimento'
+                        terão sua ordem recalculada.
+                    </div>
+                </div>
                 <div class="row">
                     <form name="editForm" role="form" novalidate ng-submit="vm.save()" show-validation>
 
@@ -42,11 +50,19 @@
                         <div class="form-group col-md-4">
                             <label for="field_modulo">Módulo</label>
                             <select class="form-control"
+                                    required
                                     ng-disabled="(vm.chamado.id && vm.chamado.situacao != 'ABERTO') || (vm.account.id != vm.chamado.solicitante.id)"
                                     id="field_modulo" name="modulo" ng-model="vm.chamado.modulo"
                                     ng-options="modulo as modulo.descricao for modulo in vm.modulos track by modulo.id">
                                 <option value=""></option>
                             </select>
+                            <div ng-show="editForm.modulo.$invalid">
+                                <p class="help-block"
+                                   ng-show="editForm.modulo.$error.required"
+                                   data-translate="entity.validation.required">
+                                    This field is required.
+                                </p>
+                            </div>
                         </div>
 
 
@@ -180,7 +196,7 @@
 
                             <button type="button"
                                     has-authority="ROLE_ATENDENTE"
-                                    ng-show="vm.chamado.situacao != 'ABERTO' && vm.chamado.situacao != 'IMPEDIDO'"
+                                    ng-show="vm.chamado.situacao != 'ABERTO' && vm.chamado.situacao != 'IMPEDIDO' && vm.chamado.situacao != 'ENCERRADO'"
                                     ng-click="vm.impedir()"
                                     ng-disabled="editForm.$invalid || vm.isSaving || !vm.chamado.id"
                                     class="btn btn-warning">
@@ -189,7 +205,16 @@
 
                             <button type="button"
                                     has-authority="ROLE_ATENDENTE"
-                                    ng-show="vm.chamado.situacao == 'IMPEDIDO'"
+                                    ng-show="vm.chamado.situacao != 'ABERTO' && vm.chamado.situacao != 'IMPEDIDO' && vm.chamado.situacao != 'ENCERRADO'"
+                                    ng-click="vm.encerrar()"
+                                    ng-disabled="editForm.$invalid || vm.isSaving || !vm.chamado.id"
+                                    class="btn btn-info">
+                                <span class="fa fa-check"></span>&nbsp;Encerrar
+                            </button>
+
+                            <button type="button"
+                                    has-authority="ROLE_ATENDENTE"
+                                    ng-show="vm.chamado.situacao == 'IMPEDIDO' || vm.chamado.situacao == 'ENCERRADO'"
                                     ng-click="vm.impedir()"
                                     ng-disabled="editForm.$invalid || vm.isSaving || !vm.chamado.id"
                                     class="btn btn-warning">

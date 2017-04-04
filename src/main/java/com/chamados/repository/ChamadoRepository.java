@@ -33,7 +33,7 @@ public interface ChamadoRepository extends JpaRepository<Chamado, Long> {
     @Query("select chamado from Chamado chamado left join chamado.responsavel rel where (rel is null or rel.login = ?#{principal.username}) and chamado.situacao = 'ABERTO' order by chamado.ordem")
     Page<Chamado> findAllAbertosDisponiveis(Pageable pageable);
 
-    @Query("select max(chamado.ordem) from Chamado chamado where chamado.situacao in ('ABERTO', 'SUPORTE', 'FILA_DESENVOLVIMENTO')")
+    @Query("select coalesce(max(chamado.ordem),0) from Chamado chamado where chamado.situacao in ('ABERTO', 'SUPORTE', 'FILA_DESENVOLVIMENTO')")
     Integer buscarUltimaOrdemDisponivel();
 
     @Query("select count(chamado.id) from Chamado chamado left join chamado.responsavel resp" +

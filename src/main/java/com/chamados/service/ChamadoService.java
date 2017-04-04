@@ -64,6 +64,9 @@ public class ChamadoService {
     public Chamado save(Chamado chamado) {
         log.debug("Request to save Chamado : {}", chamado);
         Chamado result = chamadoRepository.save(chamado);
+        if(result.getSituacao().podeAlterarOrdem()){
+
+        }
         return result;
     }
 
@@ -166,7 +169,6 @@ public class ChamadoService {
         User user = userService.getUserWithAuthorities();
         List<String> authorities = user.getAuthorities().stream().map(authority -> authority.getName())
             .collect(Collectors.toList());
-        log.error("------>>> {}", authorities);
         if (authorities.contains(AuthoritiesConstants.CLIENTE)) {
             return chamadoRepository.findAllBySituacaoAndSolicitante(pageable, situacao);
         }

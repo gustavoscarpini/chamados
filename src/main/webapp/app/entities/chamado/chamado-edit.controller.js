@@ -19,6 +19,7 @@
         vm.solicitarDesenvolvimento = solicitarDesenvolvimento;
         vm.liberarTeste = liberarTeste;
         vm.impedir = impedir;
+        vm.encerrar = encerrar;
         vm.validar = validar;
         vm.rejeitar = rejeitar;
         vm.users = User.query();
@@ -91,6 +92,29 @@
                 function (isConfirm) {
                     if (isConfirm) {
                         vm.chamado.situacao = (vm.chamado.situacao == 'IMPEDIDO' ? 'ABERTO' : 'IMPEDIDO');
+                        Chamado.update(vm.chamado, onSaveSuccess, onSaveError);
+                    } else {
+                        vm.isSaving = false;
+                        SweetAlert.swal("Operação cancelada", "o chamado não foi alerado e continua " + vm.chamado.situacao, "warning");
+                    }
+                });
+        }
+
+        function encerrar() {
+            vm.isSaving = true;
+            SweetAlert.swal({
+                    title: "Confirme a operação",
+                    text: "Você tem certeza que quer ENCERRAR esse chamado?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55", confirmButtonText: "Sim",
+                    cancelButtonText: "Não",
+                    closeOnConfirm: false,
+                    closeOnCancel: false
+                },
+                function (isConfirm) {
+                    if (isConfirm) {
+                        vm.chamado.situacao = 'FECHADO';
                         Chamado.update(vm.chamado, onSaveSuccess, onSaveError);
                     } else {
                         vm.isSaving = false;

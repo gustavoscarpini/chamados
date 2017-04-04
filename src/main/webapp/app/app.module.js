@@ -19,7 +19,8 @@
             'angular-loading-bar',
             'ncy-angular-breadcrumb',
             'yaru22.angular-timeago',
-            'oitozero.ngSweetAlert'
+            'oitozero.ngSweetAlert',
+            'chart.js'
         ])
         .run(run);
 

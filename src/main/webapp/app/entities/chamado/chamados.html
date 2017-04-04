@@ -69,7 +69,7 @@
                                         <td>
                                             {{chamado.modulo.descricao}}
                                         </td>
-                                        <td>
+                                        <td ng-show="!vm.situacao">
                                             <span
                                                 data-translate="{{'chamadosApp.SituacaoChamado.' + chamado.situacao}}">{{chamado.situacao}}</span>
                                         </td>

@@ -216,7 +216,7 @@ public class ChamadoResource {
         chamado.setSituacao(SituacaoChamado.ABERTO);
         chamado.setCriadoEm(LocalDate.now());
         chamado.setSolicitante(userService.getUserWithAuthorities());
-        chamado.setOrdem(chamadoService.buscarUltimaOrdemDisponivel());
+        chamado.setOrdem(chamadoService.buscarUltimaOrdemDisponivel() + 1);
 
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(chamado));
     }

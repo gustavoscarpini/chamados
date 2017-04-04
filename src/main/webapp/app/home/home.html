@@ -18,7 +18,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    Sua Lista de Chamados
+                    Planejamento para a próxima Sprint
                     <div class="ibox-tools">
                         <a ui-sref="new-chamado" class="btn btn-primary btn-xs">
                             <span class="glyphicon glyphicon-plus"></span>
@@ -28,14 +28,117 @@
                 </div>
                 <div class="ibox-content">
                     <div class="row">
+                        <div class="col-md-12 text-center">
+                            <div class="alert alert-info">
+                                Listando os chamados por <strong>ORDEM</strong> que podem ser alocados para
+                                desenvolvimento
+                                na próxima Sprint
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="jh-table table table-striped">
+                                    <tbody>
+                                    <tr ng-repeat="chamado in vm.chamados track by chamado.id">
+                                        <td>
+                                            {{chamado.ordem}}
+                                        </td>
+                                        <td class="issue-info">
+                                            <a ui-sref="edit-chamado({id:chamado.id})">
+                                                #{{chamado.id}}
+                                            </a>
+                                            <small>
+                                                {{chamado.titulo}}
+                                            </small>
+                                        </td>
+                                        <td class="issue-info">
+                                            {{chamado.solicitante.firstName}}
+                                            <small>
+                                                {{chamado.responsavel.firstName}}
+                                            </small>
+                                        </td>
+                                        <td>{{chamado.criadoEm | date:'mediumDate'}}</td>
+                                        <td>
+                                            <i ng-if="chamado.tempoEstimado" class="fa fa-clock-o"></i>
+                                            {{chamado.tempoEstimado}}
+                                        </td>
+                                        <td>
+                                            {{chamado.modulo.descricao}}
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="small label label-{{vm.getCorPorTipo(chamado.tipoChamado)}}">
+                                            <span data-translate="{{'chamadosApp.TipoChamado.' + chamado.tipoChamado}}">{{chamado.tipoChamado}}</span>
+                                           </span>
+                                        </td>
+                                        <td class="text-right">
+                                            <button type="submit"
+                                                    ui-sref="edit-chamado({id:chamado.id})"
+                                                    class="btn btn-primary btn-sm">
+                                                <span class="fa fa-eye"></span>
+                                                <span class="hidden-sm-down">Ver</span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" ng-switch-when="true">
+        <div class="col-md-6">
+            <div class="ibox">
+                <div class="ibox-title">
+                    Chamados fechados por sprint
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+                        <canvas id="bar" class="chart chart-bar"
+                                style="display: block; width: 523px; height: 261px;"
+                                chart-data="vm.dataBar" chart-labels="vm.labelsBar" chart-series="vm.seriesBar">
+                        </canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="ibox">
+                <div class="ibox-title">
+                    Chamados abertos por tipo
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+                        <canvas id="pie" class="chart chart-pie"
+                                style="display: block; width: 523px; height: 261px;"
+                                chart-data="vm.dataPie" chart-labels="vm.labelsPie">
+                        </canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    Seu Dashboard
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
                         <div class="col-lg-3" ng-repeat="situacao in vm.situacoes" ng-if="situacao.quantidade > 0">
                             <div class="ibox float-e-margins">
                                 <div class="ibox-title">
-                                    <h5 data-translate="{{'chamadosApp.SituacaoChamado.' + situacao.situacaoChamado}}" >{{situacao.situacaoChamado}}</h5>
+                                    <h5 data-translate="{{'chamadosApp.SituacaoChamado.' + situacao.situacaoChamado}}">
+                                        {{situacao.situacaoChamado}}</h5>
                                 </div>
                                 <div class="ibox-content">
                                     <h1 class="no-margins">{{situacao.quantidade}}</h1>
-                                    <div class="stat-percent font-bold text-success">98% <i class="fa fa-bolt"></i></div>
+                                    <div
+                                        class="stat-percent font-bold text-{{vm.getCorPorSituacao(situacao.situacaoChamado)}}">
+                                        {{situacao.percentual}}% <i class="fa fa-bolt"></i></div>
                                     <small>Total income</small>
                                 </div>
                             </div>
@@ -44,6 +147,8 @@
                 </div>
             </div>
         </div>
+
+
     </div>
 </div>
 
