@@ -1,11 +1,9 @@
 package com.chamados.service;
 
-import com.chamados.domain.Chamado;
-import com.chamados.domain.Comentario;
-import com.chamados.domain.SolicitacaoDesenvolvimento;
-import com.chamados.domain.User;
+import com.chamados.domain.*;
 import com.chamados.domain.enumeration.SituacaoChamado;
 import com.chamados.repository.ChamadoRepository;
+import com.chamados.repository.ClienteRepository;
 import com.chamados.repository.ComentarioRepository;
 import com.chamados.repository.SolicitacaoDesenvolvimentoRepository;
 import com.chamados.security.AuthoritiesConstants;
@@ -41,6 +39,7 @@ public class ChamadoService {
     private final Logger log = LoggerFactory.getLogger(ChamadoService.class);
 
     private final ChamadoRepository chamadoRepository;
+    private final ClienteRepository clienteRepository;
     private final ComentarioRepository comentarioRepository;
     private final SolicitacaoDesenvolvimentoRepository solicitacaoDesenvolvimentoRepository;
     private final UserService userService;
@@ -48,11 +47,13 @@ public class ChamadoService {
     public ChamadoService(ChamadoRepository chamadoRepository,
                           ComentarioRepository comentarioRepository,
                           SolicitacaoDesenvolvimentoRepository solicitacaoDesenvolvimentoRepository,
-                          UserService userService) {
+                          UserService userService,
+                          ClienteRepository clienteRepository) {
         this.chamadoRepository = chamadoRepository;
         this.solicitacaoDesenvolvimentoRepository = solicitacaoDesenvolvimentoRepository;
         this.userService = userService;
         this.comentarioRepository = comentarioRepository;
+        this.clienteRepository = clienteRepository;
     }
 
     /**
@@ -63,11 +64,19 @@ public class ChamadoService {
      */
     public Chamado save(Chamado chamado) {
         log.debug("Request to save Chamado : {}", chamado);
-        Chamado result = chamadoRepository.save(chamado);
-        if(result.getSituacao().podeAlterarOrdem()){
-
+        chamado = chamadoRepository.save(chamado);
+        if (chamado.getSituacao().podeAlterarOrdem()) {
+            Integer ordem = chamado.getOrdem();
+            List<Chamado> chamados = chamadoRepository.buscarChamadosQuePodemAlterarOrdem(chamado.getOrdem(), chamado.getCliente().getId());
+            for (Chamado novaOrdem : chamados) {
+                if(!novaOrdem.getId().equals(chamado.getId())){
+                    ordem = ordem + 1;
+                    novaOrdem.setOrdem(ordem);
+                    chamadoRepository.save(novaOrdem);
+                }
+            }
         }
-        return result;
+        return chamado;
     }
 
     /**
@@ -77,9 +86,9 @@ public class ChamadoService {
      * @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<Chamado> findAll(Pageable pageable) {
+    public Page<Chamado> findAll(Pageable pageable, Long clienteId) {
         log.debug("Request to get all Chamados");
-        Page<Chamado> result = chamadoRepository.findAll(pageable);
+        Page<Chamado> result = chamadoRepository.findAllOrderByOrdem(pageable, clienteId);
         return result;
     }
 
@@ -165,24 +174,24 @@ public class ChamadoService {
         return result;
     }
 
-    public Page<Chamado> findAllBySituacao(Pageable pageable, SituacaoChamado situacao) {
+    public Page<Chamado> findAllBySituacao(Pageable pageable, SituacaoChamado situacao, Long clienteId) {
         User user = userService.getUserWithAuthorities();
         List<String> authorities = user.getAuthorities().stream().map(authority -> authority.getName())
             .collect(Collectors.toList());
         if (authorities.contains(AuthoritiesConstants.CLIENTE)) {
-            return chamadoRepository.findAllBySituacaoAndSolicitante(pageable, situacao);
+            return chamadoRepository.findAllBySituacaoAndSolicitante(pageable, situacao, clienteId);
         }
         if (authorities.contains(AuthoritiesConstants.ATENDENTE)) {
             if (SituacaoChamado.ABERTO.equals(situacao)) {
-                return chamadoRepository.findAllAbertosDisponiveis(pageable);
+                return chamadoRepository.findAllAbertosDisponiveis(pageable, clienteId);
             }
-            return chamadoRepository.findAllBySituacaoAndAtendente(pageable, situacao);
+            return chamadoRepository.findAllBySituacaoAndAtendente(pageable, situacao, clienteId);
         }
         return null;
     }
 
-    public Integer buscarUltimaOrdemDisponivel() {
-        return chamadoRepository.buscarUltimaOrdemDisponivel();
+    public Integer buscarUltimaOrdemDisponivel(Long clienteId) {
+        return chamadoRepository.buscarUltimaOrdemDisponivel(clienteId);
     }
 
     public Comentario comentar(Comentario comentario) {
@@ -193,10 +202,10 @@ public class ChamadoService {
         return comentarioRepository.findByChamado(pageable, id);
     }
 
-    public List<ChamadoPorSituacao> contarPorSiuacao() {
+    public List<ChamadoPorSituacao> contarPorSiuacao(Long clienteId) {
         List<ChamadoPorSituacao> retorno = Lists.newArrayList();
         for (SituacaoChamado situacaoChamado : SituacaoChamado.values()) {
-            Integer total = chamadoRepository.countBySituacao(situacaoChamado);
+            Integer total = chamadoRepository.countBySituacao(situacaoChamado, clienteId);
             retorno.add(new ChamadoPorSituacao(situacaoChamado, total));
         }
         return retorno;
@@ -204,25 +213,33 @@ public class ChamadoService {
 
     @Scheduled(cron = "0/15 * * * * ?")
     public void atualizarSolicitacoesDesenvolvimento() {
-        RedmineManager menager = RedmineManagerFactory.createWithUserAuth(URI, ORTS_REDMINE_USER, ORTS_REDMINE_PASSWORD);
-        List<SolicitacaoDesenvolvimento> solitacoes = solicitacaoDesenvolvimentoRepository.findAllEmDesenvolvimento();
-        for (SolicitacaoDesenvolvimento solicitacao : solitacoes) {
-            try {
-                Issue ticket = menager.getIssueManager().getIssueById(solicitacao.getNumero());
+//        RedmineManager menager = RedmineManagerFactory.createWithUserAuth(URI, ORTS_REDMINE_USER, ORTS_REDMINE_PASSWORD);
+//        List<SolicitacaoDesenvolvimento> solitacoes = solicitacaoDesenvolvimentoRepository.findAllEmDesenvolvimento();
+//        for (SolicitacaoDesenvolvimento solicitacao : solitacoes) {
+//            try {
+//                Issue ticket = menager.getIssueManager().getIssueById(solicitacao.getNumero());
+//
+//
+//                if (!ticket.getStatusName().equals(solicitacao.getSituacao())
+//                    && solicitacao.getChamado().getSituacao().equals(SituacaoChamado.AGUARDANDO_DESENVOLVIMENTO)) {
+//                    Chamado chamado = solicitacao.getChamado();
+//                    chamado.setSituacao(SituacaoChamado.EM_DESENVOLVIMENTO);
+//                    save(chamado);
+//                }
+//                solicitacao.setSituacao(ticket.getStatusName());
+//                solicitacaoDesenvolvimentoRepository.save(solicitacao);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
 
+    }
 
-                if(!ticket.getStatusName().equals(solicitacao.getSituacao())
-                    && solicitacao.getChamado().getSituacao().equals(SituacaoChamado.AGUARDANDO_DESENVOLVIMENTO)){
-                    Chamado chamado = solicitacao.getChamado();
-                    chamado.setSituacao(SituacaoChamado.EM_DESENVOLVIMENTO);
-                    save(chamado);
-                }
-                solicitacao.setSituacao(ticket.getStatusName());
-                solicitacaoDesenvolvimentoRepository.save(solicitacao);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+    public Cliente getClientebyId(Long clienteId) {
+        return clienteRepository.findOne(clienteId);
+    }
 
+    public Page<Chamado> findAllByClienteId(Pageable pageable, Long clienteId) {
+        return chamadoRepository.findAllOrderByOrdem(pageable, clienteId);
     }
 }

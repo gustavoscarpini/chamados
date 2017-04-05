@@ -108,4 +108,25 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="addAnexoChamado" author="scarpini">
+        <createTable tableName="anexo_chamado">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="chamado_id" type="bigint"/>
+            <column name="conteudo" type="text"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="chamado_id"
+                                 baseTableName="anexo_chamado"
+                                 constraintName="fk_anexo_chamado"
+                                 referencedColumnNames="id"
+                                 referencedTableName="chamado"/>
+    </changeSet>
+
+    <changeSet id="addDescricaoAnexo" author="scarpini">
+        <addColumn tableName="anexo_chamado">
+            <column name="descricao" type="varchar(255)" />
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

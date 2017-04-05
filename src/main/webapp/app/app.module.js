@@ -1,8 +1,9 @@
-(function() {
+(function () {
     'use strict';
 
     angular
         .module('chamadosApp', [
+            'LocalStorageModule',
             'ngStorage',
             'tmh.dynamicLocale',
             'pascalprecht.translate',
@@ -20,17 +21,18 @@
             'ncy-angular-breadcrumb',
             'yaru22.angular-timeago',
             'oitozero.ngSweetAlert',
-            'chart.js'
+            'chart.js',
+            'ngImgCrop'
         ])
         .run(run);
 
-    run.$inject = ['$rootScope','stateHandler', 'translationHandler', '$state', 'timeAgoSettings'];
+    run.$inject = ['$rootScope', 'stateHandler', 'translationHandler', '$state', 'timeAgoSettings'];
 
     function run($rootScope, stateHandler, translationHandler, $state, timeAgoSettings) {
         stateHandler.initialize();
         translationHandler.initialize();
         $rootScope.$state = $state;
-        var oneDay = 60*60*24;
+        var oneDay = 60 * 60 * 24;
         timeAgoSettings.fullDateAfterSeconds = oneDay;
         timeAgoSettings.overrideLang = 'pt_BR';
     }

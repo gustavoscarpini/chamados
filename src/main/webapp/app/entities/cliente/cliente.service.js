@@ -1,4 +1,4 @@
-(function() {
+(function () {
     'use strict';
     angular
         .module('chamadosApp')
@@ -6,11 +6,12 @@
 
     Cliente.$inject = ['$resource'];
 
-    function Cliente ($resource) {
-        var resourceUrl =  'api/clientes/:id';
+    function Cliente($resource) {
+        var resourceUrl = 'api/clientes/:id';
 
         return $resource(resourceUrl, {}, {
-            'query': { method: 'GET', isArray: true},
+            'query': {method: 'GET', isArray: true},
+            'getByUser': {url: 'api/clientes-usuario', method: 'GET', isArray: true},
             'get': {
                 method: 'GET',
                 transformResponse: function (data) {
@@ -20,7 +21,7 @@
                     return data;
                 }
             },
-            'update': { method:'PUT' }
+            'update': {method: 'PUT'}
         });
     }
 })();

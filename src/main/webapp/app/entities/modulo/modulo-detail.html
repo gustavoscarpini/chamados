@@ -8,10 +8,20 @@
         <dd>
             <span>{{vm.modulo.descricao}}</span>
         </dd>
+        <dt><span data-translate="chamadosApp.modulo.projetoRedMine">Projeto Red Mine</span></dt>
+        <dd>
+            <span>{{vm.modulo.projetoRedMine}}</span>
+        </dd>
         <dt><span data-translate="chamadosApp.modulo.usuarios">Usuarios</span></dt>
         <dd>
             <span ng-repeat="usuarios in vm.modulo.usuarios">
                 {{usuarios.login}}{{$last ? '' : ', '}}
+            </span>
+        </dd>
+        <dt><span data-translate="chamadosApp.modulo.clientes">Clientes</span></dt>
+        <dd>
+            <span ng-repeat="clientes in vm.modulo.clientes">
+                <a ui-sref="cliente-detail({id: clientes.id})">{{clientes.nome}}</a>{{$last ? '' : ', '}}
             </span>
         </dd>
     </dl>

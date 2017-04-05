@@ -19,8 +19,10 @@ public class ModuloService {
     private final Logger log = LoggerFactory.getLogger(ModuloService.class);
 
     private final ModuloRepository moduloRepository;
+    private final UserService userService;
 
-    public ModuloService(ModuloRepository moduloRepository) {
+    public ModuloService(ModuloRepository moduloRepository, UserService userService) {
+        this.userService = userService;
         this.moduloRepository = moduloRepository;
     }
 
@@ -70,5 +72,9 @@ public class ModuloService {
     public void delete(Long id) {
         log.debug("Request to delete Modulo : {}", id);
         moduloRepository.delete(id);
+    }
+
+    public Page<Modulo> findAllByUser(Pageable pageable) {
+        return moduloRepository.findAllByUser(pageable);
     }
 }

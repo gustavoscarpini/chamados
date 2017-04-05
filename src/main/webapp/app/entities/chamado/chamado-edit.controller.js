@@ -5,12 +5,12 @@
         .module('chamadosApp')
         .controller('ChamadoEditController', ChamadoEditController);
 
-    ChamadoEditController.$inject = ['$timeout', '$scope', '$state', 'previousState', 'entity', 'Chamado', 'User', 'Cliente', 'Modulo', 'Principal', '$uibModal', 'Notificacao', 'SweetAlert'];
+    ChamadoEditController.$inject = ['$timeout', '$scope', '$state', 'previousState', 'entity', 'Chamado', 'User', 'Cliente', 'Modulo', 'Principal', '$uibModal', 'Notificacao', 'Upload', 'AnexoChamado'];
 
-    function ChamadoEditController($timeout, $scope, $state, previousState, entity, Chamado, User, Cliente, Modulo, Principal, $uibModal, Notificacao, SweetAlert) {
+    function ChamadoEditController($timeout, $scope, $state, previousState, entity, Chamado, User, Cliente, Modulo, Principal, $uibModal, Notificacao, Upload, AnexoChamado) {
         var vm = this;
-
         vm.chamado = entity;
+        vm.ordemOriginal = vm.chamado.ordem;
         vm.solicitacoes = [];
         vm.datePickerOpenStatus = {};
         vm.save = save;
@@ -22,8 +22,11 @@
         vm.encerrar = encerrar;
         vm.validar = validar;
         vm.rejeitar = rejeitar;
+        vm.upload = upload;
+        vm.removerAnexo = removerAnexo;
+        vm.downloadAnexo = downloadAnexo;
         vm.users = User.query();
-        vm.modulos = Modulo.query();
+        vm.modulos = Modulo.queryByUser();
         vm.clientes = Cliente.query();
         vm.previousState = previousState.name;
 
@@ -38,11 +41,47 @@
                 console.log(error);
             }) : [];
             vm.comentario = {chamado: vm.chamado, usuario: vm.account};
+            vm.anexos = vm.chamado.id ? AnexoChamado.query({id: vm.chamado.id}) : [];
         });
 
 
+        function removerAnexo(index) {
+            var anexo = vm.anexos[index];
+            if (anexo.id) {
+                AnexoChamado.delete(anexo);
+            }
+            vm.anexos.splice(index, 1);
+        }
+
+        function downloadAnexo(index) {
+            var anexo = vm.anexos[index];
+
+            Upload.urlToBlob(anexo.conteudo).then(function (blob) {
+                var a = document.createElement("a");
+                document.body.appendChild(a);
+                a.style = "display: none";
+                var fileURL = window.URL.createObjectURL(blob);
+                a.href = fileURL;
+                a.download = anexo.descricao;
+                a.click();
+            });
+        }
+
         function save() {
             vm.isSaving = true;
+            if (vm.ordemOriginal != vm.chamado.ordem) {
+                Notificacao.confirm("Atenção!",
+                    "Você está salvando um chamado em uma ordem já existente, os chamados que estão 'Abertos', 'Fila de Suporte' ou 'Fila de desenvolvimento' serão re-ordenados.",
+                    "warning",
+                    confirmSave,
+                    onSaveError);
+            } else {
+                confirmSave();
+            }
+
+        }
+
+        function confirmSave() {
             if (vm.chamado.id !== null) {
                 Chamado.update(vm.chamado, onSaveSuccess, onSaveError);
             } else {
@@ -60,7 +99,6 @@
             Chamado.comentar(vm.comentario, function (data) {
                 vm.comentario = {chamado: vm.chamado};
                 $state.reload();
-                Notificacao.success("Operação realizada!", "Novo comentário salvo com sucesso!");
                 vm.isSaving = false;
             }, onSaveError);
         }
@@ -77,73 +115,47 @@
             Chamado.update(vm.chamado, onSaveSuccess, onSaveError);
         }
 
+        function confirmImpedir() {
+            vm.chamado.situacao = (vm.chamado.situacao == 'IMPEDIDO' ? 'ABERTO' : 'IMPEDIDO');
+            Chamado.update(vm.chamado, onSaveSuccess, onSaveError);
+
+        }
+
         function impedir() {
             vm.isSaving = true;
-            SweetAlert.swal({
-                    title: "Confirme a operação",
-                    text: "Você tem certeza que quer " + (vm.chamado.situacao == 'IMPEDIDO' ? 'Re-abrir' : 'Impedir') + " esse chamado? Ao continuar o chamado irá mudar de situação, não se esqueça de comentar o motivo",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#DD6B55", confirmButtonText: "Sim",
-                    cancelButtonText: "Não",
-                    closeOnConfirm: false,
-                    closeOnCancel: false
-                },
-                function (isConfirm) {
-                    if (isConfirm) {
-                        vm.chamado.situacao = (vm.chamado.situacao == 'IMPEDIDO' ? 'ABERTO' : 'IMPEDIDO');
-                        Chamado.update(vm.chamado, onSaveSuccess, onSaveError);
-                    } else {
-                        vm.isSaving = false;
-                        SweetAlert.swal("Operação cancelada", "o chamado não foi alerado e continua " + vm.chamado.situacao, "warning");
-                    }
-                });
+            Notificacao.confirm("Confirme a operação",
+                "Você tem certeza que quer " + (vm.chamado.situacao == 'IMPEDIDO' ? 'Re-abrir' : 'Impedir') + " esse chamado? Ao continuar o chamado irá mudar de situação, não se esqueça de comentar o motivo",
+                "warning",
+                confirmImpedir,
+                onSaveError);
+        }
+
+        function confirmEcerrar() {
+            vm.chamado.situacao = 'FECHADO';
+            Chamado.update(vm.chamado, onSaveSuccess, onSaveError);
         }
 
         function encerrar() {
             vm.isSaving = true;
-            SweetAlert.swal({
-                    title: "Confirme a operação",
-                    text: "Você tem certeza que quer ENCERRAR esse chamado?",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#DD6B55", confirmButtonText: "Sim",
-                    cancelButtonText: "Não",
-                    closeOnConfirm: false,
-                    closeOnCancel: false
-                },
-                function (isConfirm) {
-                    if (isConfirm) {
-                        vm.chamado.situacao = 'FECHADO';
-                        Chamado.update(vm.chamado, onSaveSuccess, onSaveError);
-                    } else {
-                        vm.isSaving = false;
-                        SweetAlert.swal("Operação cancelada", "o chamado não foi alerado e continua " + vm.chamado.situacao, "warning");
-                    }
-                });
+            Notificacao.confirm("Confirme a operação",
+                "Você tem certeza que quer ENCERRAR esse chamado?",
+                "warning",
+                confirmEcerrar,
+                onSaveError);
+        }
+
+        function confirmRejeitar() {
+            vm.chamado.situacao = 'ABERTO';
+            Chamado.update(vm.chamado, onSaveSuccess, onSaveError);
         }
 
         function rejeitar() {
             vm.isSaving = true;
-            SweetAlert.swal({
-                    title: "Confirme a operação",
-                    text: "Você tem certeza que Rejeitar a validação desse chamado? Ao rejeitar o chamado irá voltar para aberto, não se esqueça de comentar o motivo da rejeição",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#DD6B55", confirmButtonText: "Sim",
-                    cancelButtonText: "Não",
-                    closeOnConfirm: false,
-                    closeOnCancel: false
-                },
-                function (isConfirm) {
-                    if (isConfirm) {
-                        vm.chamado.situacao = 'ABERTO';
-                        Chamado.update(vm.chamado, onSaveSuccess, onSaveError);
-                    } else {
-                        vm.isSaving = false;
-                        SweetAlert.swal("Operação cancelada", "o chamado não foi rejeitado e continua " + vm.chamado.situacao, "warning");
-                    }
-                });
+            Notificacao.confirm("Confirme a operação",
+                "Você tem certeza que Rejeitar a validação desse chamado? Ao rejeitar o chamado irá voltar para aberto, não se esqueça de comentar o motivo da rejeição",
+                "warning",
+                confirmRejeitar,
+                onSaveError);
         }
 
         function solicitarDesenvolvimento() {
@@ -168,6 +180,12 @@
         }
 
         function onSaveSuccess(result) {
+            if (vm.anexos) {
+                angular.forEach(vm.anexos, function (anexo) {
+                    anexo.chamado = vm.chamado;
+                    AnexoChamado.save(anexo);
+                });
+            }
             $scope.$emit('chamadosApp:chamadoUpdate', result);
             vm.isSaving = false;
             $state.go('edit-chamado', {id: result.id}, {reload: true});
@@ -183,6 +201,22 @@
                 vm.account = account;
                 vm.isAuthenticated = Principal.isAuthenticated;
             });
+        }
+
+        function upload($file) {
+            if ($file) {
+                if (!vm.anexos) {
+                    vm.anexos = [];
+                }
+                Upload.dataUrl($file, true).then(
+                    function (conteudo) {
+                        var anexo = {};
+                        anexo.descricao = $file.name;
+                        anexo.conteudo = conteudo;
+                        vm.anexos.push(anexo);
+                    }
+                );
+            }
         }
     }
 

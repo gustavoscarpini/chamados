@@ -1,6 +1,15 @@
 {
     "fluentMethods": true,
-    "relationships": [],
+    "relationships": [
+        {
+            "relationshipName": "usuarios",
+            "otherEntityName": "user",
+            "relationshipType": "many-to-many",
+            "otherEntityField": "login",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "cliente"
+        }
+    ],
     "fields": [
         {
             "fieldName": "nome",
@@ -12,6 +21,10 @@
             ],
             "fieldValidateRulesMinlength": "2",
             "fieldValidateRulesMaxlength": "100"
+        },
+        {
+            "fieldName": "projetoRedMine",
+            "fieldType": "String"
         }
     ],
     "changelogDate": "20170312202447",

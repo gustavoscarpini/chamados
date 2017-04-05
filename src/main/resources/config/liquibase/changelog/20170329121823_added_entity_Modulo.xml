@@ -26,6 +26,10 @@
                 <constraints nullable="false" />
             </column>
 
+            <column name="projeto_red_mine" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
 
@@ -39,6 +43,17 @@
         </createTable>
 
         <addPrimaryKey columnNames="modulos_id, usuarios_id" tableName="modulo_usuarios"/>
+
+        <createTable tableName="modulo_clientes">
+            <column name="clientes_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modulos_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="modulos_id, clientes_id" tableName="modulo_clientes"/>
 
     </changeSet>
 </databaseChangeLog>

@@ -20,6 +20,7 @@
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
                     <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="nome"><span data-translate="chamadosApp.cliente.nome">Nome</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="projetoRedMine"><span data-translate="chamadosApp.cliente.projetoRedMine">Projeto Red Mine</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
@@ -27,6 +28,7 @@
                 <tr ng-repeat="cliente in vm.clientes track by cliente.id">
                     <td><a ui-sref="cliente-detail({id:cliente.id})">{{cliente.id}}</a></td>
                     <td>{{cliente.nome}}</td>
+                    <td>{{cliente.projetoRedMine}}</td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"

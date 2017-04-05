@@ -17,7 +17,10 @@
                 "title": "Modulo"
             },
             "descricao": "Descricao",
-            "usuarios": "Usuarios"
+            "projetoRedMine": "Projeto Red Mine",
+            "usuarios": "Usuarios",
+            "cliente": "Cliente",
+            "clientes": "Clientes"
         }
     }
 }

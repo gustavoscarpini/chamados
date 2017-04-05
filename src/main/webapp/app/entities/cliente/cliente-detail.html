@@ -8,6 +8,16 @@
         <dd>
             <span>{{vm.cliente.nome}}</span>
         </dd>
+        <dt><span data-translate="chamadosApp.cliente.projetoRedMine">Projeto Red Mine</span></dt>
+        <dd>
+            <span>{{vm.cliente.projetoRedMine}}</span>
+        </dd>
+        <dt><span data-translate="chamadosApp.cliente.usuarios">Usuarios</span></dt>
+        <dd>
+            <span ng-repeat="usuarios in vm.cliente.usuarios">
+                {{usuarios.login}}{{$last ? '' : ', '}}
+            </span>
+        </dd>
     </dl>
 
     <button type="submit"

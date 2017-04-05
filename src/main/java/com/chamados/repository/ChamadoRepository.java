@@ -16,29 +16,52 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface ChamadoRepository extends JpaRepository<Chamado, Long> {
 
-    @Query("select chamado from Chamado chamado where chamado.solicitante.login = ?#{principal.username}")
-    List<Chamado> findBySolicitanteIsCurrentUser();
 
-    @Query("select chamado from Chamado chamado where chamado.responsavel.login = ?#{principal.username}")
-    List<Chamado> findByResponsavelIsCurrentUser();
+    @Query("select chamado from Chamado chamado " +
+        " where chamado.solicitante.login = ?#{principal.username} " +
+        " and chamado.situacao = :situacao " +
+        " and chamado.cliente.id = :clienteId " +
+        " order by chamado.ordem")
+    Page<Chamado> findAllBySituacaoAndSolicitante(Pageable pageable, @Param("situacao") SituacaoChamado situacao, @Param("clienteId") Long clienteId);
 
-    Page<Chamado> findAllBySituacao(Pageable pageable, SituacaoChamado situacao);
+    @Query("select chamado from Chamado chamado " +
+        " where chamado.responsavel.login = ?#{principal.username} " +
+        " and chamado.situacao = :situacao " +
+        " and chamado.cliente.id = :clienteId " +
+        " order by chamado.ordem")
+    Page<Chamado> findAllBySituacaoAndAtendente(Pageable pageable, @Param("situacao") SituacaoChamado situacao, @Param("clienteId") Long clienteId);
 
-    @Query("select chamado from Chamado chamado where chamado.solicitante.login = ?#{principal.username} and chamado.situacao = :situacao order by chamado.ordem")
-    Page<Chamado> findAllBySituacaoAndSolicitante(Pageable pageable, @Param("situacao") SituacaoChamado situacao);
+    @Query("select chamado from Chamado chamado " +
+        " left join chamado.responsavel rel " +
+        " where (rel is null or rel.login = ?#{principal.username})" +
+        " and chamado.situacao = 'ABERTO' " +
+        " and chamado.cliente.id = :clienteId " +
+        " order by chamado.ordem")
+    Page<Chamado> findAllAbertosDisponiveis(Pageable pageable, @Param("clienteId") Long clienteId);
 
-    @Query("select chamado from Chamado chamado where chamado.responsavel.login = ?#{principal.username} and chamado.situacao = :situacao order by chamado.ordem")
-    Page<Chamado> findAllBySituacaoAndAtendente(Pageable pageable, @Param("situacao") SituacaoChamado situacao);
+    @Query("select coalesce(max(chamado.ordem),0) " +
+        " from Chamado chamado " +
+        " where chamado.situacao in ('ABERTO', 'EM_SUPORTE', 'AGUARDANDO_DESENVOLVIMENTO')" +
+        " and chamado.cliente.id = :clienteId ")
+    Integer buscarUltimaOrdemDisponivel(@Param("clienteId") Long clienteId);
 
-    @Query("select chamado from Chamado chamado left join chamado.responsavel rel where (rel is null or rel.login = ?#{principal.username}) and chamado.situacao = 'ABERTO' order by chamado.ordem")
-    Page<Chamado> findAllAbertosDisponiveis(Pageable pageable);
-
-    @Query("select coalesce(max(chamado.ordem),0) from Chamado chamado where chamado.situacao in ('ABERTO', 'SUPORTE', 'FILA_DESENVOLVIMENTO')")
-    Integer buscarUltimaOrdemDisponivel();
-
-    @Query("select count(chamado.id) from Chamado chamado left join chamado.responsavel resp" +
+    @Query("select count(chamado.id) from Chamado chamado " +
+        " left join chamado.responsavel resp" +
         " where (chamado.solicitante.login = ?#{principal.username} or  resp is null or resp.login = ?#{principal.username} )" +
-        " and chamado.situacao = :situacao")
-    Integer countBySituacao(@Param("situacao") SituacaoChamado situacao);
+        " and chamado.situacao = :situacao " +
+        " and chamado.cliente.id = :clienteId")
+    Integer countBySituacao(@Param("situacao") SituacaoChamado situacao, @Param("clienteId") Long clienteId);
 
+    @Query("select chamado from Chamado " +
+        " chamado " +
+        " where chamado.situacao in ('ABERTO', 'EM_SUPORTE', 'AGUARDANDO_DESENVOLVIMENTO') " +
+        " and chamado.ordem >= :ordem " +
+        " and chamado.cliente.id = :clienteId " +
+        " order by chamado.ordem")
+    List<Chamado> buscarChamadosQuePodemAlterarOrdem(@Param("ordem") Integer ordem, @Param("clienteId") Long clienteId);
+
+    @Query("select chamado from Chamado chamado " +
+        " where chamado.cliente.id = :clienteId " +
+        " order by chamado.ordem, chamado.situacao, chamado.tipoChamado")
+    Page<Chamado> findAllOrderByOrdem(Pageable pageable, @Param("clienteId") Long clienteId);
 }

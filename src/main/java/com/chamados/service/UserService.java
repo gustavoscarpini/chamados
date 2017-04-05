@@ -1,15 +1,16 @@
 package com.chamados.service;
 
 import com.chamados.domain.Authority;
+import com.chamados.domain.ImagemUsuario;
 import com.chamados.domain.User;
 import com.chamados.repository.AuthorityRepository;
+import com.chamados.repository.ImagemUsuarioRepository;
 import com.chamados.repository.PersistentTokenRepository;
 import com.chamados.repository.UserRepository;
 import com.chamados.security.AuthoritiesConstants;
 import com.chamados.security.SecurityUtils;
-import com.chamados.service.util.RandomUtil;
 import com.chamados.service.dto.UserDTO;
-
+import com.chamados.service.util.RandomUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -21,7 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * Service class for managing users.
@@ -42,12 +46,20 @@ public class UserService {
 
     private final AuthorityRepository authorityRepository;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, SocialService socialService, PersistentTokenRepository persistentTokenRepository, AuthorityRepository authorityRepository) {
+    private final ImagemUsuarioRepository imagemUsuarioRepository;
+
+    public UserService(UserRepository userRepository,
+                       PasswordEncoder passwordEncoder,
+                       SocialService socialService,
+                       PersistentTokenRepository persistentTokenRepository,
+                       AuthorityRepository authorityRepository,
+                       ImagemUsuarioRepository imagemUsuarioRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.socialService = socialService;
         this.persistentTokenRepository = persistentTokenRepository;
         this.authorityRepository = authorityRepository;
+        this.imagemUsuarioRepository = imagemUsuarioRepository;
     }
 
     public Optional<User> activateRegistration(String key) {
@@ -63,19 +75,19 @@ public class UserService {
     }
 
     public Optional<User> completePasswordReset(String newPassword, String key) {
-       log.debug("Reset user password for reset key {}", key);
+        log.debug("Reset user password for reset key {}", key);
 
-       return userRepository.findOneByResetKey(key)
+        return userRepository.findOneByResetKey(key)
             .filter(user -> {
                 ZonedDateTime oneDayAgo = ZonedDateTime.now().minusHours(24);
                 return user.getResetDate().isAfter(oneDayAgo);
-           })
-           .map(user -> {
+            })
+            .map(user -> {
                 user.setPassword(passwordEncoder.encode(newPassword));
                 user.setResetKey(null);
                 user.setResetDate(null);
                 return user;
-           });
+            });
     }
 
     public Optional<User> requestPasswordReset(String mail) {
@@ -89,7 +101,7 @@ public class UserService {
     }
 
     public User createUser(String login, String password, String firstName, String lastName, String email,
-        String imageUrl, String langKey) {
+                           String imageUrl, String langKey) {
 
         User newUser = new User();
         Authority authority = authorityRepository.findOne(AuthoritiesConstants.USER);
@@ -197,7 +209,7 @@ public class UserService {
         });
     }
 
-    @Transactional(readOnly = true)    
+    @Transactional(readOnly = true)
     public Page<UserDTO> getAllManagedUsers(Pageable pageable) {
         return userRepository.findAll(pageable).map(UserDTO::new);
     }
@@ -249,5 +261,27 @@ public class UserService {
             log.debug("Deleting not activated user {}", user.getLogin());
             userRepository.delete(user);
         }
+    }
+
+    public ImagemUsuario salvarImagemUsuario(ImagemUsuario imagem) {
+        User userWithAuthorities = getUserWithAuthorities();
+        ImagemUsuario existente = imagemUsuarioRepository.findFirstByUsuario(userWithAuthorities);
+        if(existente != null){
+            existente.setImagemAjustada(imagem.getImagemAjustada());
+            existente.setImagemOriginal(imagem.getImagemOriginal());
+            return imagemUsuarioRepository.save(existente);
+        }else{
+            imagem.setUsuario(userWithAuthorities);
+            return imagemUsuarioRepository.save(imagem);
+        }
+    }
+
+    public ImagemUsuario buscarImagemUsuario() {
+        User userWithAuthorities = getUserWithAuthorities();
+        return imagemUsuarioRepository.findFirstByUsuario(userWithAuthorities);
+    }
+
+    public String buscarImagemAjustadaUsuario() {
+        return imagemUsuarioRepository.findImagemAjustadaByUsuario();
     }
 }

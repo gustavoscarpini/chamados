@@ -125,6 +125,7 @@
                         entity: function () {
                             return {
                                 descricao: null,
+                                projetoRedMine: null,
                                 id: null
                             };
                         }

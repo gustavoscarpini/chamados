@@ -98,6 +98,17 @@ public class ModuloResource {
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
+
+    @GetMapping("/modulos-by-user")
+    @Timed
+    public ResponseEntity<List<Modulo>> getAllModulosByUser(@ApiParam Pageable pageable)
+        throws URISyntaxException {
+        log.debug("REST request to get a page of Modulos");
+        Page<Modulo> page = moduloService.findAllByUser(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/modulos");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
     /**
      * GET  /modulos/:id : get the "id" modulo.
      *

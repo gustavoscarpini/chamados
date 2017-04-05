@@ -33,7 +33,17 @@
                 </p>
             </div>
         </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="chamadosApp.cliente.projetoRedMine" for="field_projetoRedMine">Projeto Red Mine</label>
+            <input type="text" class="form-control" name="projetoRedMine" id="field_projetoRedMine"
+                    ng-model="vm.cliente.projetoRedMine"
+                    />
+        </div>
 
+        <div class="form-group">
+            <label data-translate="chamadosApp.cliente.usuarios" for="field_usuarios">Usuarios</label>
+            <select class="form-control" id="field_usuarios" multiple name="usuarios" ng-model="vm.cliente.usuarios" ng-options="user as user.login for user in vm.users track by user.id"></select>
+        </div>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">

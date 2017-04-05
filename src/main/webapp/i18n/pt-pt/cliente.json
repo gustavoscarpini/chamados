@@ -16,7 +16,9 @@
             "detail": {
                 "title": "Cliente"
             },
-            "nome": "Nome"
+            "nome": "Nome",
+            "projetoRedMine": "Projeto Red Mine",
+            "usuarios": "Usuarios"
         }
     }
 }

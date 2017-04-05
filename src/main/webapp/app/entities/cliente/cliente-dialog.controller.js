@@ -5,14 +5,15 @@
         .module('chamadosApp')
         .controller('ClienteDialogController', ClienteDialogController);
 
-    ClienteDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'Cliente'];
+    ClienteDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'Cliente', 'User'];
 
-    function ClienteDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, Cliente) {
+    function ClienteDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, Cliente, User) {
         var vm = this;
 
         vm.cliente = entity;
         vm.clear = clear;
         vm.save = save;
+        vm.users = User.query();
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();

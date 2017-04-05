@@ -1,11 +1,9 @@
 package com.chamados.web.rest;
 
 import com.chamados.ChamadosApp;
-
 import com.chamados.domain.Cliente;
 import com.chamados.repository.ClienteRepository;
 import com.chamados.service.ClienteService;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,6 +37,9 @@ public class ClienteResourceIntTest {
 
     private static final String DEFAULT_NOME = "AAAAAAAAAA";
     private static final String UPDATED_NOME = "BBBBBBBBBB";
+
+    private static final String DEFAULT_PROJETO_RED_MINE = "AAAAAAAAAA";
+    private static final String UPDATED_PROJETO_RED_MINE = "BBBBBBBBBB";
 
     @Autowired
     private ClienteRepository clienteRepository;
@@ -76,7 +77,8 @@ public class ClienteResourceIntTest {
      */
     public static Cliente createEntity(EntityManager em) {
         Cliente cliente = new Cliente()
-                .nome(DEFAULT_NOME);
+                .nome(DEFAULT_NOME)
+                .projetoRedMine(DEFAULT_PROJETO_RED_MINE);
         return cliente;
     }
 
@@ -102,6 +104,7 @@ public class ClienteResourceIntTest {
         assertThat(clienteList).hasSize(databaseSizeBeforeCreate + 1);
         Cliente testCliente = clienteList.get(clienteList.size() - 1);
         assertThat(testCliente.getNome()).isEqualTo(DEFAULT_NOME);
+        assertThat(testCliente.getProjetoRedMine()).isEqualTo(DEFAULT_PROJETO_RED_MINE);
     }
 
     @Test
@@ -153,7 +156,8 @@ public class ClienteResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(cliente.getId().intValue())))
-            .andExpect(jsonPath("$.[*].nome").value(hasItem(DEFAULT_NOME.toString())));
+            .andExpect(jsonPath("$.[*].nome").value(hasItem(DEFAULT_NOME.toString())))
+            .andExpect(jsonPath("$.[*].projetoRedMine").value(hasItem(DEFAULT_PROJETO_RED_MINE.toString())));
     }
 
     @Test
@@ -167,7 +171,8 @@ public class ClienteResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(cliente.getId().intValue()))
-            .andExpect(jsonPath("$.nome").value(DEFAULT_NOME.toString()));
+            .andExpect(jsonPath("$.nome").value(DEFAULT_NOME.toString()))
+            .andExpect(jsonPath("$.projetoRedMine").value(DEFAULT_PROJETO_RED_MINE.toString()));
     }
 
     @Test
@@ -189,7 +194,8 @@ public class ClienteResourceIntTest {
         // Update the cliente
         Cliente updatedCliente = clienteRepository.findOne(cliente.getId());
         updatedCliente
-                .nome(UPDATED_NOME);
+                .nome(UPDATED_NOME)
+                .projetoRedMine(UPDATED_PROJETO_RED_MINE);
 
         restClienteMockMvc.perform(put("/api/clientes")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -201,6 +207,7 @@ public class ClienteResourceIntTest {
         assertThat(clienteList).hasSize(databaseSizeBeforeUpdate);
         Cliente testCliente = clienteList.get(clienteList.size() - 1);
         assertThat(testCliente.getNome()).isEqualTo(UPDATED_NOME);
+        assertThat(testCliente.getProjetoRedMine()).isEqualTo(UPDATED_PROJETO_RED_MINE);
     }
 
     @Test

@@ -4,7 +4,8 @@
             <div class="ibox-title">
                 {{vm.chamado.id ? 'Editando Chamado' :'Novo Chamado'}}
                 <div class="ibox-tools">
-                    <span class="label label-info" data-translate="{{'chamadosApp.SituacaoChamado.' + vm.chamado.situacao}}" >{{vm.chamado.situacao}}</span>
+                    <span class="label label-info"
+                          data-translate="{{'chamadosApp.SituacaoChamado.' + vm.chamado.situacao}}">{{vm.chamado.situacao}}</span>
                 </div>
             </div>
             <div class="ibox-content">
@@ -12,7 +13,8 @@
                     <div class="col-md-12 text-center alert alert-info text-small">
                         <strong>Fique atento!</strong><br/>
                         A ordem é sugerida com base no ultimo chamado criado que ainda não está em desenvolvimento.<br/>
-                        Ao altera-la todos os chamados que estão 'Abertos', 'Fila de Suporte' e 'Fila de desenvolvimento'
+                        Ao altera-la todos os chamados que estão 'Abertos', 'Fila de Suporte' e 'Fila de
+                        desenvolvimento'
                         terão sua ordem recalculada.
                     </div>
                 </div>
@@ -69,7 +71,9 @@
                         <div class="form-group col-md-2">
                             <label class="control-label" data-translate="chamadosApp.chamado.ordem" for="field_ordem">Ordem</label>
                             <input type="number"
-                                   ng-disabled="(vm.chamado.id && vm.chamado.situacao != 'ABERTO') || (vm.account.id != vm.chamado.solicitante.id)"
+                                   ng-disabled="(vm.chamado.id && vm.chamado.situacao != 'ABERTO'
+                                   && vm.chamado.id && vm.chamado.situacao != 'EM_SUPORTE'
+                                    && vm.chamado.id && vm.chamado.situacao != 'AGUARDANDO_DESENVOLVIMENTO') || (vm.account.id != vm.chamado.solicitante.id)"
                                    class="form-control" name="ordem" id="field_ordem"
                                    ng-model="vm.chamado.ordem"
                                    required/>
@@ -162,6 +166,38 @@
                                 </p>
                             </div>
                         </div>
+                        <div class="form-group col-md-12">
+                            <label class="control-label">Anexos:</label>
+                        </div>
+                        <div class="form-group col-md-4" ng-repeat="anexo in vm.anexos">
+                            <div class="input-group">
+                                <input type="text"
+                                       class="form-control" name="anexo" id="field_anexo"
+                                       ng-model="anexo.descricao"/>
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default"
+                                            ng-click="vm.downloadAnexo($index)"
+                                            type="button">
+                                        <i class="fa fa-download"></i>
+                                    </button>
+                                    <button class="btn btn-warning"
+                                            ng-click="vm.removerAnexo($index)"
+                                            type="button">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </span>
+                            </div>
+
+                        </div>
+
+                        <div class="form-group col-md-12">
+                            <button ngf-select="vm.upload($file)"
+                                    class="btn btn-block"
+                                    accept="image/*,application/pdf">
+                                <i class="fa fa-upload"></i>
+                                Selecione um arquivo para anexar
+                            </button>
+                        </div>
 
                         <div class="form-group col-md-12 text-center">
                             <button type="button" class="btn btn-default" data-dismiss="modal"
@@ -170,7 +206,9 @@
                             </button>
 
                             <button type="submit"
-                                    ng-show="vm.chamado.situacao == 'ABERTO' && vm.account.id == vm.chamado.solicitante.id"
+                                    ng-show="(vm.chamado.situacao == 'ABERTO'
+                                    || vm.chamado.id && vm.chamado.situacao == 'EM_SUPORTE'
+                                    || vm.chamado.id && vm.chamado.situacao == 'AGUARDANDO_DESENVOLVIMENTO') && vm.account.id == vm.chamado.solicitante.id"
                                     ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
                                 <i class="fa fa-save"></i>
                                 &nbsp;<span>Salvar</span>
@@ -191,12 +229,12 @@
                                     ng-click="vm.solicitarDesenvolvimento()"
                                     ng-disabled="editForm.$invalid || vm.isSaving || !vm.chamado.id"
                                     class="btn btn-success">
-                                <span class="glyphicon glyphicon-console"></span>&nbsp;Solicitar Desenvolvimento
+                                <span class="fa fa-code"></span>&nbsp;Solicitar Desenvolvimento
                             </button>
 
                             <button type="button"
                                     has-authority="ROLE_ATENDENTE"
-                                    ng-show="vm.chamado.situacao != 'ABERTO' && vm.chamado.situacao != 'IMPEDIDO' && vm.chamado.situacao != 'ENCERRADO'"
+                                    ng-show="vm.chamado.situacao != 'ABERTO' && vm.chamado.situacao != 'IMPEDIDO' && vm.chamado.situacao != 'FECHADO'"
                                     ng-click="vm.impedir()"
                                     ng-disabled="editForm.$invalid || vm.isSaving || !vm.chamado.id"
                                     class="btn btn-warning">
@@ -205,7 +243,7 @@
 
                             <button type="button"
                                     has-authority="ROLE_ATENDENTE"
-                                    ng-show="vm.chamado.situacao != 'ABERTO' && vm.chamado.situacao != 'IMPEDIDO' && vm.chamado.situacao != 'ENCERRADO'"
+                                    ng-show="vm.chamado.situacao != 'ABERTO' && vm.chamado.situacao != 'IMPEDIDO' && vm.chamado.situacao != 'FECHADO'"
                                     ng-click="vm.encerrar()"
                                     ng-disabled="editForm.$invalid || vm.isSaving || !vm.chamado.id"
                                     class="btn btn-info">
@@ -214,7 +252,7 @@
 
                             <button type="button"
                                     has-authority="ROLE_ATENDENTE"
-                                    ng-show="vm.chamado.situacao == 'IMPEDIDO' || vm.chamado.situacao == 'ENCERRADO'"
+                                    ng-show="vm.chamado.situacao == 'IMPEDIDO' || vm.chamado.situacao == 'FECHADO'"
                                     ng-click="vm.impedir()"
                                     ng-disabled="editForm.$invalid || vm.isSaving || !vm.chamado.id"
                                     class="btn btn-warning">

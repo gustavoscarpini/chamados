@@ -7,7 +7,7 @@
             "lastname": "Apelido",
             "lastname.placeholder": "O seu apelido",
             "language": "Idioma",
-            "button": "Guardar"
+            "button": "Salvar"
         },
         "messages": {
             "error": {

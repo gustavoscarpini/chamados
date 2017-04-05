@@ -21,6 +21,25 @@
             warn: function (title, message) {
                 SweetAlert.swal({title: title, text: message, type: "warning", html: true});
             },
+            confirm: function (title, text, type, callBackSuccess, callBackCancel) {
+                SweetAlert.swal({
+                        title: title,
+                        text: text,
+                        type: type,
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55", confirmButtonText: "Sim",
+                        cancelButtonText: "Não",
+                        closeOnConfirm: true,
+                        closeOnCancel: true
+                    },
+                    function (isConfirm) {
+                        if (isConfirm) {
+                            callBackSuccess();
+                        } else {
+                            callBackCancel();
+                        }
+                    });
+            },
             confirmDelete: function (callBack) {
                 SweetAlert.swal({
                         title: "Confirme a exclusão",

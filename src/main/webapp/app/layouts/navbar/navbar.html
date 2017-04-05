@@ -13,8 +13,30 @@
 
     <ul class="nav navbar-nav navbar-right">
 
+        <li ng-switch-when="true"
+            ng-if="vm.clientePrincipal"
+            uib-dropdown
+            class="dropdown pointer">
+            <a class="dropdown-toggle" uib-dropdown-toggle data-toggle="dropdown" href="">
+                                <span>
+                                    <span class="hidden-tablet">{{vm.clientePrincipal.nome}}</span>
+                                    <b class="caret"></b>
+                                </span>
+            </a>
+
+            <ul class="dropdown-menu" uib-dropdown-menu>
+
+                <li ng-repeat="cliente in vm.clientesUsuario">
+                    <a href="#" ng-click="vm.mudarCliente(cliente)">
+                        <i class="fa {{cliente.id == vm.clientePrincipal.id ? 'fa-check-circle-o' : 'fa-circle-o'}}"></i>
+                        &#xA0;<span>{{cliente.nome}}</span></a>
+                </li>
+
+            </ul>
+        </li>
+
         <li ui-sref-active="active">
-            <a href="" ng-click="vm.logout()" id="logout" ng-switch-when="true">
+            <a href="" ng-click="vm.logout()" id="logoutbar" ng-switch-when="true">
                 <span class="glyphicon glyphicon-log-out"></span>&nbsp;
                 <span data-translate="global.menu.account.logout">Sign out</span>
             </a>
@@ -39,6 +61,18 @@
                     </a>
                 </li>
 
+                <li ui-sref-active="active">
+                                <a ui-sref="cliente" ng-click="vm.collapseNavbar()">
+                                    <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
+                                    <span data-translate="global.menu.entities.cliente">Cliente</span>
+                                </a>
+                            </li>
+                <li ui-sref-active="active">
+                                <a ui-sref="modulo" ng-click="vm.collapseNavbar()">
+                                    <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
+                                    <span data-translate="global.menu.entities.modulo">Modulo</span>
+                                </a>
+                            </li>
                 <!-- jhipster-needle-add-entity-to-menu - JHipster will add entities to the menu here -->
             </ul>
         </li>

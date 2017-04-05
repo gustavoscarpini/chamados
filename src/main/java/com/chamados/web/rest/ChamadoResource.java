@@ -128,10 +128,10 @@ public class ChamadoResource {
      */
     @GetMapping("/chamados")
     @Timed
-    public ResponseEntity<List<Chamado>> getAllChamados(@ApiParam Pageable pageable)
+    public ResponseEntity<List<Chamado>> getAllChamados(@ApiParam Pageable pageable, @RequestHeader Long clienteId)
         throws URISyntaxException {
-        log.debug("REST request to get a page of Chamados");
-        Page<Chamado> page = chamadoService.findAll(pageable);
+        log.debug("REST request to get a page of Chamados " + clienteId);
+        Page<Chamado> page = chamadoService.findAllByClienteId(pageable, clienteId);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/chamados");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -139,10 +139,11 @@ public class ChamadoResource {
     @GetMapping("/chamados-by-situacao/{situacao}")
     @Timed
     public ResponseEntity<List<Chamado>> getAllChamados(@ApiParam Pageable pageable,
-                                                        @PathVariable SituacaoChamado situacao)
+                                                        @PathVariable SituacaoChamado situacao,
+                                                        @RequestHeader Long clienteId)
         throws URISyntaxException {
         log.debug("REST request to get a page of Chamados");
-        Page<Chamado> page = chamadoService.findAllBySituacao(pageable, situacao);
+        Page<Chamado> page = chamadoService.findAllBySituacao(pageable, situacao, clienteId);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/chamados");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -172,10 +173,10 @@ public class ChamadoResource {
 
     @GetMapping("/countar-por-situacao")
     @Timed
-    public ResponseEntity<List<ChamadoPorSituacao>> contarPorSituacoes()
+    public ResponseEntity<List<ChamadoPorSituacao>> contarPorSituacoes(@RequestHeader Long clienteId)
         throws URISyntaxException {
         log.debug("REST request to get a page of Chamados");
-        return new ResponseEntity<>(chamadoService.contarPorSiuacao(), HttpStatus.OK);
+        return new ResponseEntity<>(chamadoService.contarPorSiuacao(clienteId), HttpStatus.OK);
     }
 
 
@@ -210,13 +211,14 @@ public class ChamadoResource {
 
     @GetMapping("/chamados-criar")
     @Timed
-    public ResponseEntity<Chamado> criar() {
+    public ResponseEntity<Chamado> criar(@RequestHeader Long clienteId) {
         log.debug("REST request to criar Chamado ");
         Chamado chamado = new Chamado();
+        chamado.setCliente(chamadoService.getClientebyId(clienteId));
         chamado.setSituacao(SituacaoChamado.ABERTO);
         chamado.setCriadoEm(LocalDate.now());
         chamado.setSolicitante(userService.getUserWithAuthorities());
-        chamado.setOrdem(chamadoService.buscarUltimaOrdemDisponivel() + 1);
+        chamado.setOrdem(chamadoService.buscarUltimaOrdemDisponivel(clienteId) + 1);
 
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(chamado));
     }

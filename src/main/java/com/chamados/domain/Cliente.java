@@ -4,9 +4,12 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * A Cliente.
@@ -28,6 +31,16 @@ public class Cliente implements Serializable {
     @Column(name = "nome", length = 100, nullable = false)
     private String nome;
 
+    @Column(name = "projeto_red_mine")
+    private String projetoRedMine;
+
+    @ManyToMany
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JoinTable(name = "cliente_usuarios",
+               joinColumns = @JoinColumn(name="clientes_id", referencedColumnName="id"),
+               inverseJoinColumns = @JoinColumn(name="usuarios_id", referencedColumnName="id"))
+    private Set<User> usuarios = new HashSet<>();
+
     public Long getId() {
         return id;
     }
@@ -47,6 +60,42 @@ public class Cliente implements Serializable {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public String getProjetoRedMine() {
+        return projetoRedMine;
+    }
+
+    public Cliente projetoRedMine(String projetoRedMine) {
+        this.projetoRedMine = projetoRedMine;
+        return this;
+    }
+
+    public void setProjetoRedMine(String projetoRedMine) {
+        this.projetoRedMine = projetoRedMine;
+    }
+
+    public Set<User> getUsuarios() {
+        return usuarios;
+    }
+
+    public Cliente usuarios(Set<User> users) {
+        this.usuarios = users;
+        return this;
+    }
+
+    public Cliente addUsuarios(User user) {
+        this.usuarios.add(user);
+        return this;
+    }
+
+    public Cliente removeUsuarios(User user) {
+        this.usuarios.remove(user);
+        return this;
+    }
+
+    public void setUsuarios(Set<User> users) {
+        this.usuarios = users;
     }
 
     @Override
@@ -74,6 +123,7 @@ public class Cliente implements Serializable {
         return "Cliente{" +
             "id=" + id +
             ", nome='" + nome + "'" +
+            ", projetoRedMine='" + projetoRedMine + "'" +
             '}';
     }
 }

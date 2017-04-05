@@ -31,12 +31,23 @@ public class Modulo implements Serializable {
     @Column(name = "descricao", length = 50, nullable = false)
     private String descricao;
 
+    @Column(name = "projeto_red_mine")
+    private String projetoRedMine;
+
     @ManyToMany
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JoinTable(name = "modulo_usuarios",
                joinColumns = @JoinColumn(name="modulos_id", referencedColumnName="id"),
                inverseJoinColumns = @JoinColumn(name="usuarios_id", referencedColumnName="id"))
     private Set<User> usuarios = new HashSet<>();
+
+
+    @ManyToMany
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JoinTable(name = "modulo_clientes",
+               joinColumns = @JoinColumn(name="modulos_id", referencedColumnName="id"),
+               inverseJoinColumns = @JoinColumn(name="clientes_id", referencedColumnName="id"))
+    private Set<Cliente> clientes = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -57,6 +68,19 @@ public class Modulo implements Serializable {
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
+    }
+
+    public String getProjetoRedMine() {
+        return projetoRedMine;
+    }
+
+    public Modulo projetoRedMine(String projetoRedMine) {
+        this.projetoRedMine = projetoRedMine;
+        return this;
+    }
+
+    public void setProjetoRedMine(String projetoRedMine) {
+        this.projetoRedMine = projetoRedMine;
     }
 
     public Set<User> getUsuarios() {
@@ -80,6 +104,15 @@ public class Modulo implements Serializable {
 
     public void setUsuarios(Set<User> users) {
         this.usuarios = users;
+    }
+
+
+    public Set<Cliente> getClientes() {
+        return clientes;
+    }
+
+    public void setClientes(Set<Cliente> clientes) {
+        this.clientes = clientes;
     }
 
     @Override
@@ -107,6 +140,7 @@ public class Modulo implements Serializable {
         return "Modulo{" +
             "id=" + id +
             ", descricao='" + descricao + "'" +
+            ", projetoRedMine='" + projetoRedMine + "'" +
             '}';
     }
 }

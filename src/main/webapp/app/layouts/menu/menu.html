@@ -6,8 +6,12 @@
                     <div style="text-align: center">
 
                        <span>
+                            <img ng-src="{{vm.imagemUsuario}}"
+                                 ng-show="vm.imagemUsuario"
+                                 class="img-circle" width="48"/>
                             <img alt="image" class="img-circle"
-                                 ng-src="/content/images/profile_small.jpg" width="48"/>
+                                 ng-show="!vm.imagemUsuario"
+                                 ng-src="/content/images/user-default.jpg" width="48"/>
                         </span>
 
                         <a href="">
@@ -34,8 +38,8 @@
                 </a>
             </li>
 
-            <li ui-sref-active-eq="active" ng-repeat="situacao in vm.situacoes">
-                <a ui-sref="chamado({situacao: situacao.situacaoChamado})">
+            <li ui-sref-active-eq="active" has-authority="ROLE_USER" ng-repeat="situacao in vm.situacoes | orderBy: situacaoChamado">
+                <a ui-sref="chamado({situacao: situacao.situacaoChamado})" ng-if="situacao.situacaoChamado != 'FECHADO'">
                     <i class="small fa fa-circle-o"></i>
                     <span class="nav-label small" data-translate="{{'chamadosApp.SituacaoChamado.' + situacao.situacaoChamado}}">Aguardando validação</span>
                     <span ng-if="situacao.quantidade > 0"
@@ -43,7 +47,7 @@
                 </a>
             </li>
 
-            <li ui-sref-active-eq="active">
+            <li ui-sref-active-eq="active" has-authority="ROLE_USER">
                 <a ui-sref="chamado({situacao: null})">
                     <i class="fa fa-tasks"></i>
                     <span class="nav-label">Todos chamados</span>

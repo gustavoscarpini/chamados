@@ -5,9 +5,9 @@
         .module('chamadosApp')
         .controller('ClienteDetailController', ClienteDetailController);
 
-    ClienteDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Cliente'];
+    ClienteDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Cliente', 'User'];
 
-    function ClienteDetailController($scope, $rootScope, $stateParams, previousState, entity, Cliente) {
+    function ClienteDetailController($scope, $rootScope, $stateParams, previousState, entity, Cliente, User) {
         var vm = this;
 
         vm.cliente = entity;

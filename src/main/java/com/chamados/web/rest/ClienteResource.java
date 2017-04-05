@@ -1,12 +1,13 @@
 package com.chamados.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
 import com.chamados.domain.Cliente;
 import com.chamados.service.ClienteService;
+import com.chamados.service.dto.ClienteDTO;
 import com.chamados.web.rest.util.HeaderUtil;
 import com.chamados.web.rest.util.PaginationUtil;
-import io.swagger.annotations.ApiParam;
+import com.codahale.metrics.annotation.Timed;
 import io.github.jhipster.web.util.ResponseUtil;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -32,7 +33,7 @@ public class ClienteResource {
     private final Logger log = LoggerFactory.getLogger(ClienteResource.class);
 
     private static final String ENTITY_NAME = "cliente";
-        
+
     private final ClienteService clienteService;
 
     public ClienteResource(ClienteService clienteService) {
@@ -96,6 +97,15 @@ public class ClienteResource {
         Page<Cliente> page = clienteService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/clientes");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    @GetMapping("/clientes-usuario")
+    @Timed
+    public ResponseEntity<List<ClienteDTO>> getAllClientesUsuario()
+        throws URISyntaxException {
+        log.debug("REST request to get a page of Clientes");
+        List<ClienteDTO> page = clienteService.findAllByUsuario();
+        return new ResponseEntity<>(page, HttpStatus.OK);
     }
 
     /**

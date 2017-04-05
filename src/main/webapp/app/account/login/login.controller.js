@@ -33,14 +33,12 @@
         });
 
         function login(event) {
-            console.log("Vai fazer o login");
             event.preventDefault();
             Auth.login({
                 username: vm.username,
                 password: vm.password,
                 rememberMe: vm.rememberMe
             }).then(function () {
-                console.log("Caiu no then ", $state.current);
                 vm.authenticationError = false;
                 $rootScope.$broadcast('authenticationSuccess');
                 if ($state.current.name === 'login' ||

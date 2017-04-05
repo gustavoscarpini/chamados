@@ -1,0 +1,50 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "usuarios",
+            "otherEntityName": "user",
+            "relationshipType": "many-to-many",
+            "otherEntityField": "login",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "modulo"
+        },
+        {
+            "relationshipName": "cliente",
+            "otherEntityName": "cliente",
+            "relationshipType": "many-to-many",
+            "ownerSide": false,
+            "otherEntityRelationshipName": "modulo"
+        },
+        {
+            "relationshipName": "clientes",
+            "otherEntityName": "cliente",
+            "relationshipType": "many-to-many",
+            "otherEntityField": "nome",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "modulo"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "descricao",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "minlength",
+                "maxlength"
+            ],
+            "fieldValidateRulesMinlength": "2",
+            "fieldValidateRulesMaxlength": "50"
+        },
+        {
+            "fieldName": "projetoRedMine",
+            "fieldType": "String"
+        }
+    ],
+    "changelogDate": "20170329121823",
+    "dto": "no",
+    "service": "serviceClass",
+    "entityTableName": "modulo",
+    "pagination": "pagination"
+}

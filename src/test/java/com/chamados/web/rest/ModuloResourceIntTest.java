@@ -38,6 +38,9 @@ public class ModuloResourceIntTest {
     private static final String DEFAULT_DESCRICAO = "AAAAAAAAAA";
     private static final String UPDATED_DESCRICAO = "BBBBBBBBBB";
 
+    private static final String DEFAULT_PROJETO_RED_MINE = "AAAAAAAAAA";
+    private static final String UPDATED_PROJETO_RED_MINE = "BBBBBBBBBB";
+
     @Autowired
     private ModuloRepository moduloRepository;
 
@@ -74,7 +77,8 @@ public class ModuloResourceIntTest {
      */
     public static Modulo createEntity(EntityManager em) {
         Modulo modulo = new Modulo()
-                .descricao(DEFAULT_DESCRICAO);
+                .descricao(DEFAULT_DESCRICAO)
+                .projetoRedMine(DEFAULT_PROJETO_RED_MINE);
         return modulo;
     }
 
@@ -100,6 +104,7 @@ public class ModuloResourceIntTest {
         assertThat(moduloList).hasSize(databaseSizeBeforeCreate + 1);
         Modulo testModulo = moduloList.get(moduloList.size() - 1);
         assertThat(testModulo.getDescricao()).isEqualTo(DEFAULT_DESCRICAO);
+        assertThat(testModulo.getProjetoRedMine()).isEqualTo(DEFAULT_PROJETO_RED_MINE);
     }
 
     @Test
@@ -151,7 +156,8 @@ public class ModuloResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(modulo.getId().intValue())))
-            .andExpect(jsonPath("$.[*].descricao").value(hasItem(DEFAULT_DESCRICAO.toString())));
+            .andExpect(jsonPath("$.[*].descricao").value(hasItem(DEFAULT_DESCRICAO.toString())))
+            .andExpect(jsonPath("$.[*].projetoRedMine").value(hasItem(DEFAULT_PROJETO_RED_MINE.toString())));
     }
 
     @Test
@@ -165,7 +171,8 @@ public class ModuloResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(modulo.getId().intValue()))
-            .andExpect(jsonPath("$.descricao").value(DEFAULT_DESCRICAO.toString()));
+            .andExpect(jsonPath("$.descricao").value(DEFAULT_DESCRICAO.toString()))
+            .andExpect(jsonPath("$.projetoRedMine").value(DEFAULT_PROJETO_RED_MINE.toString()));
     }
 
     @Test
@@ -187,7 +194,8 @@ public class ModuloResourceIntTest {
         // Update the modulo
         Modulo updatedModulo = moduloRepository.findOne(modulo.getId());
         updatedModulo
-                .descricao(UPDATED_DESCRICAO);
+                .descricao(UPDATED_DESCRICAO)
+                .projetoRedMine(UPDATED_PROJETO_RED_MINE);
 
         restModuloMockMvc.perform(put("/api/modulos")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -199,6 +207,7 @@ public class ModuloResourceIntTest {
         assertThat(moduloList).hasSize(databaseSizeBeforeUpdate);
         Modulo testModulo = moduloList.get(moduloList.size() - 1);
         assertThat(testModulo.getDescricao()).isEqualTo(UPDATED_DESCRICAO);
+        assertThat(testModulo.getProjetoRedMine()).isEqualTo(UPDATED_PROJETO_RED_MINE);
     }
 
     @Test

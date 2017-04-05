@@ -19,5 +19,16 @@
                                  referencedColumnNames="id"
                                  referencedTableName="jhi_user"/>
         
+        <addForeignKeyConstraint baseColumnNames="modulos_id"
+                                 baseTableName="modulo_clientes"
+                                 constraintName="fk_modulo_clientes_modulos_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="modulo"/>
+        <addForeignKeyConstraint baseColumnNames="clientes_id"
+                                 baseTableName="modulo_clientes"
+                                 constraintName="fk_modulo_clientes_clientes_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="cliente"/>
+        
     </changeSet>
 </databaseChangeLog>

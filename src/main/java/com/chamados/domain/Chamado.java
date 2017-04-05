@@ -62,6 +62,7 @@ public class Chamado implements Serializable {
     private User responsavel;
 
     @ManyToOne
+    @NotNull
     private Cliente cliente;
 
     @Column(name = "tempo_estimado", nullable = false)
