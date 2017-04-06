@@ -1,4 +1,4 @@
-<div class="row" xmlns:td="http://www.w3.org/1999/xlink">
+<div class="row">
     <div class="col-lg-12">
         <div class="ibox">
             <div class="ibox-title">
@@ -148,6 +148,8 @@
                             <textarea type="text" class="form-control"
                                       ng-disabled="(vm.chamado.id && vm.chamado.situacao != 'ABERTO') || (vm.account.id != vm.chamado.solicitante.id)"
                                       name="conteudo" id="field_conteudo"
+                                      rows="10"
+                                      style="overflow: auto"
                                       ng-model="vm.chamado.conteudo"
                                       required ng-minlength="2" ng-maxlength="3000"/>
                             <div ng-show="editForm.conteudo.$invalid">
@@ -422,6 +424,7 @@
                           name="conteudo" id="field_conteudo_socilitacao"
                           ng-model="vm.solicitacaoDesenvolvimento.conteudo"
                           required ng-minlength="2" ng-maxlength="3000"></textarea>
+
                 <div ng-show="editFormSolicitacao.conteudo.$invalid">
                     <p class="help-block"
                        ng-show="editFormSolicitacao.conteudo.$error.required"

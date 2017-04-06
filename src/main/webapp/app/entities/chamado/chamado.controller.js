@@ -14,6 +14,7 @@
         vm.isAuthenticated = null;
         vm.login = login;
         vm.register = register;
+        vm.editarChamado = editarChamado;
         vm.loadPage = loadPage;
         vm.predicate = pagingParams.predicate;
         vm.reverse = pagingParams.ascending;
@@ -81,7 +82,8 @@
             $state.transitionTo($state.$current, {
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
-                search: vm.currentSearch
+                search: vm.currentSearch,
+                situacao: vm.situacao
             });
         }
 
@@ -97,6 +99,9 @@
             $state.go('register');
         }
 
+        function editarChamado(chamado) {
+            $state.go('edit-chamado', ({id: chamado.id}));
+        }
 
 
         function getCorPorTipo(tipo) {

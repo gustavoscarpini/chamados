@@ -50,4 +50,20 @@
             <column name="horas_disponiveis" type="bigint" />
         </addColumn>
     </changeSet>
+
+    <changeSet id="loadCliente" author="scarpini">
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/cliente.csv"
+                  separator=";"
+                  tableName="cliente">
+        </loadData>
+    </changeSet>
+
+    <changeSet id="loadClienteUsuario" author="scarpini">
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/cliente_usuario.csv"
+                  separator=";"
+                  tableName="cliente_usuarios">
+        </loadData>
+    </changeSet>
 </databaseChangeLog>

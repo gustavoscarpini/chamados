@@ -81,9 +81,7 @@
                 deferred.resolve(_identity);
                 Cliente.getByUser({}, function (data) {
                     localStorageService.set('clientesUsuario', data);
-                    if (data && !localStorageService.get('clientePrincipal')) {
-                        localStorageService.set('clientePrincipal', data[0]);
-                    }
+                    localStorageService.set('clientePrincipal', data[0]);
                 });
             }
 

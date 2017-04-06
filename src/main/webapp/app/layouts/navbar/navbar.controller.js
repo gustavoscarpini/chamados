@@ -18,7 +18,6 @@
         vm.collapseNavbar = collapseNavbar;
         vm.mudarCliente = mudarCliente;
         vm.$state = $state;
-        vm.situacoes = Chamado.contarPorSituacao();
 
         vm.isNavbarCollapsed = true;
         vm.isAuthenticated = Principal.isAuthenticated;
@@ -27,6 +26,12 @@
             vm.inProduction = response.inProduction;
             vm.swaggerEnabled = response.swaggerEnabled;
         });
+
+        function montarMenu() {
+            Chamado.contarPorSituacao({}, function (data) {
+                vm.situacoes = data;
+            });
+        }
 
         function getAccount() {
             Principal.identity().then(function (account) {
@@ -40,9 +45,12 @@
         }
 
         getAccount();
+        montarMenu();
+
 
         $scope.$on('authenticationSuccess', function () {
             getAccount();
+            montarMenu();
         });
 
         function login() {

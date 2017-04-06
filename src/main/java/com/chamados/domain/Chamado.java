@@ -33,8 +33,7 @@ public class Chamado implements Serializable {
     private String titulo;
 
     @NotNull
-    @Size(min = 2, max = 3000)
-    @Column(name = "conteudo", length = 3000, nullable = false)
+    @Column(name = "conteudo", nullable = false)
     private String conteudo;
 
     @NotNull

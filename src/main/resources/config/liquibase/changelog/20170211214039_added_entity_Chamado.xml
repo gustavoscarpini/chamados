@@ -23,37 +23,37 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="titulo" type="varchar(255)">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
 
             <column name="conteudo" type="varchar(3000)">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
 
             <column name="tipo_chamado" type="varchar(255)">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
 
             <column name="criado_em" type="date">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
 
             <column name="prazo" type="date"/>
 
             <column name="ordem" type="integer">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
 
             <column name="solicitante_id" type="bigint">
-                <constraints nullable="true" />
+                <constraints nullable="true"/>
             </column>
 
             <column name="responsavel_id" type="bigint">
-                <constraints nullable="true" />
+                <constraints nullable="true"/>
             </column>
 
             <column name="cliente_id" type="bigint">
-                <constraints nullable="true" />
+                <constraints nullable="true"/>
             </column>
 
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
@@ -67,13 +67,13 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="numero" type="integer">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
             <column name="situacao" type="varchar(255)">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
             <column name="chamado_id" type="bigint">
-                <constraints nullable="true" />
+                <constraints nullable="true"/>
             </column>
         </createTable>
     </changeSet>
@@ -86,7 +86,7 @@
 
     <changeSet id="20170211214039-4" author="scarpini">
         <addColumn tableName="chamado">
-            <column name="situacao" type="varchar(255)" />
+            <column name="situacao" type="varchar(255)"/>
         </addColumn>
         <update tableName="chamado">
             <column name="situacao">ABERTO</column>
@@ -95,16 +95,16 @@
     <changeSet id="20170211214039-5" author="scarpini">
         <addColumn tableName="chamado">
             <column name="modulo_id" type="bigint">
-                <constraints nullable="true" />
+                <constraints nullable="true"/>
             </column>
         </addColumn>
     </changeSet>
 
     <changeSet id="20170211214039-6" author="scarpini">
         <addColumn tableName="solicitacaodesenvolvimento">
-            <column name="tipo_sla" type="varchar(255)" />
-            <column name="conteudo" type="varchar(3000)" />
-            <column name="criterio" type="varchar(3000)" />
+            <column name="tipo_sla" type="varchar(255)"/>
+            <column name="conteudo" type="varchar(3000)"/>
+            <column name="criterio" type="varchar(3000)"/>
         </addColumn>
     </changeSet>
 
@@ -126,14 +126,27 @@
 
     <changeSet id="addDescricaoAnexo" author="scarpini">
         <addColumn tableName="anexo_chamado">
-            <column name="descricao" type="varchar(255)" />
+            <column name="descricao" type="varchar(255)"/>
         </addColumn>
     </changeSet>
 
     <changeSet id="20170211214039-7" author="scarpini">
         <addColumn tableName="solicitacaodesenvolvimento">
-            <column name="versao" type="varchar(255)" />
-            <column name="percentual_terminado" type="bigint" />
+            <column name="versao" type="varchar(255)"/>
+            <column name="percentual_terminado" type="bigint"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="20170211214039-8" author="scarpini">
+        <modifyDataType tableName="chamado" columnName="conteudo" newDataType="text"/>
+    </changeSet>
+    <changeSet id="20170211214039-9" author="scarpini">
+        <modifyDataType tableName="solicitacaodesenvolvimento" columnName="conteudo" newDataType="text"/>
+        <modifyDataType tableName="solicitacaodesenvolvimento" columnName="criterio" newDataType="text"/>
+    </changeSet>
+
+    <changeSet id="20170211214039-10" author="scarpini">
+        <addColumn tableName="chamado">
+            <column name="ticket_legado" type="bigint"/>
         </addColumn>
     </changeSet>
 </databaseChangeLog>

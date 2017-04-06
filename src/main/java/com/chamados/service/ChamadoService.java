@@ -9,7 +9,6 @@ import com.chamados.repository.SolicitacaoDesenvolvimentoRepository;
 import com.chamados.security.AuthoritiesConstants;
 import com.chamados.service.dto.ChamadoPorSituacao;
 import com.google.common.collect.Lists;
-import com.taskadapter.redmineapi.Include;
 import com.taskadapter.redmineapi.RedmineException;
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.RedmineManagerFactory;
@@ -212,7 +211,7 @@ public class ChamadoService {
         return retorno;
     }
 
-    @Scheduled(cron = "0/15 * * * * ?")
+    @Scheduled(cron = "0/60 * * * * ?")
     public void atualizarSolicitacoesDesenvolvimento() {
         RedmineManager menager = RedmineManagerFactory.createWithUserAuth(URI, ORTS_REDMINE_USER, ORTS_REDMINE_PASSWORD);
         List<SolicitacaoDesenvolvimento> solitacoes = solicitacaoDesenvolvimentoRepository.findAllEmDesenvolvimento();
@@ -229,7 +228,6 @@ public class ChamadoService {
                     chamado.setTempoEstimado(ticket.getEstimatedHours().intValue());
                     chamadoRepository.save(chamado);
                 }
-                solicitacao.setVersao(ticket.getTargetVersion().getDescription());
                 solicitacao.setPercentualTerminado(ticket.getDoneRatio());
                 solicitacao.setSituacao(ticket.getStatusName());
                 solicitacaoDesenvolvimentoRepository.save(solicitacao);

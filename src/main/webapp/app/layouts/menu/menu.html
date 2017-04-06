@@ -38,7 +38,8 @@
                 </a>
             </li>
 
-            <li ui-sref-active-eq="active" has-authority="ROLE_USER" ng-repeat="situacao in vm.situacoes | orderBy: situacaoChamado">
+            <li ui-sref-active-eq="active" has-authority="ROLE_USER"
+                ng-repeat="situacao in vm.situacoes | orderBy: situacaoChamado">
                 <a ui-sref="chamado({situacao: situacao.situacaoChamado})" ng-if="situacao.situacaoChamado != 'FECHADO'">
                     <i class="small fa fa-circle-o"></i>
                     <span class="nav-label small" data-translate="{{'chamadosApp.SituacaoChamado.' + situacao.situacaoChamado}}">Aguardando validação</span>

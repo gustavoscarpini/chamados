@@ -5,9 +5,9 @@
         .module('chamadosApp')
         .controller('HomeController', HomeController);
 
-    HomeController.$inject = ['$scope', 'Principal', '$state', 'Chamado', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams', '$uibModal'];
+    HomeController.$inject = ['$scope', 'Principal', '$state', 'Chamado', 'Notificacao'];
 
-    function HomeController($scope, Principal, $state, Chamado, ParseLinks, AlertService, paginationConstants, pagingParams, $uibModal) {
+    function HomeController($scope, Principal, $state, Chamado, Notificacao) {
         var vm = this;
 
         vm.account = null;

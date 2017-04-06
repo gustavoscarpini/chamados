@@ -41,8 +41,7 @@ public class SolicitacaoDesenvolvimento implements Serializable {
     private String tipoSla;
 
     @NotNull
-    @Size(min = 2, max = 3000)
-    @Column(name = "conteudo", length = 3000, nullable = false)
+    @Column(name = "conteudo", nullable = false)
     private String conteudo;
 
     @NotNull

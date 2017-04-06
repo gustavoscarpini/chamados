@@ -197,16 +197,6 @@
 
         <addUniqueConstraint tableName="jhi_social_user_connection" columnNames="user_id, provider_id, rank"/>
     </changeSet>
-    <changeSet id="addAuthorityCliente" author="scarpini">
-        <insert tableName="jhi_authority">
-            <column name="name">ROLE_CLIENTE</column>
-        </insert>
-    </changeSet>
-    <changeSet id="addAuthorityAtendente" author="scarpini">
-        <insert tableName="jhi_authority">
-            <column name="name">ROLE_ATENDENTE</column>
-        </insert>
-    </changeSet>
     <changeSet id="addImageUsuario" author="scarpini">
         <createTable tableName="imagem_usuario">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
