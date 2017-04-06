@@ -45,4 +45,9 @@
         <addPrimaryKey columnNames="clientes_id, usuarios_id" tableName="cliente_usuarios"/>
 
     </changeSet>
+    <changeSet id="addHoras" author="scarpini">
+        <addColumn tableName="cliente">
+            <column name="horas_disponiveis" type="bigint" />
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

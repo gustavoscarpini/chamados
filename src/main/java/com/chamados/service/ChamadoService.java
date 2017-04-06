@@ -9,6 +9,7 @@ import com.chamados.repository.SolicitacaoDesenvolvimentoRepository;
 import com.chamados.security.AuthoritiesConstants;
 import com.chamados.service.dto.ChamadoPorSituacao;
 import com.google.common.collect.Lists;
+import com.taskadapter.redmineapi.Include;
 import com.taskadapter.redmineapi.RedmineException;
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.RedmineManagerFactory;
@@ -69,7 +70,7 @@ public class ChamadoService {
             Integer ordem = chamado.getOrdem();
             List<Chamado> chamados = chamadoRepository.buscarChamadosQuePodemAlterarOrdem(chamado.getOrdem(), chamado.getCliente().getId());
             for (Chamado novaOrdem : chamados) {
-                if(!novaOrdem.getId().equals(chamado.getId())){
+                if (!novaOrdem.getId().equals(chamado.getId())) {
                     ordem = ordem + 1;
                     novaOrdem.setOrdem(ordem);
                     chamadoRepository.save(novaOrdem);
@@ -157,7 +158,7 @@ public class ChamadoService {
 
         Chamado chamado = solicitacao.getChamado();
         chamado.setSituacao(SituacaoChamado.AGUARDANDO_DESENVOLVIMENTO);
-        save(chamado);
+        chamadoRepository.save(chamado);
 
     }
 
@@ -213,25 +214,29 @@ public class ChamadoService {
 
     @Scheduled(cron = "0/15 * * * * ?")
     public void atualizarSolicitacoesDesenvolvimento() {
-//        RedmineManager menager = RedmineManagerFactory.createWithUserAuth(URI, ORTS_REDMINE_USER, ORTS_REDMINE_PASSWORD);
-//        List<SolicitacaoDesenvolvimento> solitacoes = solicitacaoDesenvolvimentoRepository.findAllEmDesenvolvimento();
-//        for (SolicitacaoDesenvolvimento solicitacao : solitacoes) {
-//            try {
-//                Issue ticket = menager.getIssueManager().getIssueById(solicitacao.getNumero());
-//
-//
-//                if (!ticket.getStatusName().equals(solicitacao.getSituacao())
-//                    && solicitacao.getChamado().getSituacao().equals(SituacaoChamado.AGUARDANDO_DESENVOLVIMENTO)) {
-//                    Chamado chamado = solicitacao.getChamado();
-//                    chamado.setSituacao(SituacaoChamado.EM_DESENVOLVIMENTO);
-//                    save(chamado);
-//                }
-//                solicitacao.setSituacao(ticket.getStatusName());
-//                solicitacaoDesenvolvimentoRepository.save(solicitacao);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
+        RedmineManager menager = RedmineManagerFactory.createWithUserAuth(URI, ORTS_REDMINE_USER, ORTS_REDMINE_PASSWORD);
+        List<SolicitacaoDesenvolvimento> solitacoes = solicitacaoDesenvolvimentoRepository.findAllEmDesenvolvimento();
+        for (SolicitacaoDesenvolvimento solicitacao : solitacoes) {
+            try {
+                Issue ticket = menager.getIssueManager().getIssueById(solicitacao.getNumero());
+                Chamado chamado = solicitacao.getChamado();
+                if (!ticket.getStatusName().equals(solicitacao.getSituacao())
+                    && solicitacao.getChamado().getSituacao().equals(SituacaoChamado.AGUARDANDO_DESENVOLVIMENTO)) {
+                    chamado.setSituacao(SituacaoChamado.EM_DESENVOLVIMENTO);
+                    chamadoRepository.save(chamado);
+                }
+                if(chamado.getTempoEstimado() == null && ticket.getEstimatedHours() != null){
+                    chamado.setTempoEstimado(ticket.getEstimatedHours().intValue());
+                    chamadoRepository.save(chamado);
+                }
+                solicitacao.setVersao(ticket.getTargetVersion().getDescription());
+                solicitacao.setPercentualTerminado(ticket.getDoneRatio());
+                solicitacao.setSituacao(ticket.getStatusName());
+                solicitacaoDesenvolvimentoRepository.save(solicitacao);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
     }
 
@@ -241,5 +246,9 @@ public class ChamadoService {
 
     public Page<Chamado> findAllByClienteId(Pageable pageable, Long clienteId) {
         return chamadoRepository.findAllOrderByOrdem(pageable, clienteId);
+    }
+
+    public List<Chamado> buscarChamadosQuePodemAlterarOrdem(Long clienteId) {
+        return chamadoRepository.buscarChamadosQuePodemAlterarOrdem(0, clienteId);
     }
 }

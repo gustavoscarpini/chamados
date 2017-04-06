@@ -1,6 +1,7 @@
 package com.chamados.web.rest;
 
 import com.chamados.domain.Chamado;
+import com.chamados.domain.Cliente;
 import com.chamados.domain.Comentario;
 import com.chamados.domain.SolicitacaoDesenvolvimento;
 import com.chamados.domain.enumeration.SituacaoChamado;
@@ -68,8 +69,8 @@ public class ChamadoResource {
         }
         Chamado result = chamadoService.save(chamado);
         return ResponseEntity.created(new URI("/api/chamados/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
-            .body(result);
+                .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+                .body(result);
     }
 
     @PostMapping("/chamados-aceitar")
@@ -81,8 +82,8 @@ public class ChamadoResource {
         chamado.setSituacao(SituacaoChamado.EM_SUPORTE);
         Chamado result = chamadoService.save(chamado);
         return ResponseEntity.created(new URI("/api/chamados/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
-            .body(result);
+                .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+                .body(result);
     }
 
 
@@ -93,8 +94,8 @@ public class ChamadoResource {
         comentario.setCriadoEm(LocalDateTime.now());
         Comentario result = chamadoService.comentar(comentario);
         return ResponseEntity.created(new URI("/api/chamados/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
-            .body(result);
+                .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+                .body(result);
     }
 
     /**
@@ -115,8 +116,8 @@ public class ChamadoResource {
         }
         Chamado result = chamadoService.save(chamado);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, chamado.getId().toString()))
-            .body(result);
+                .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, chamado.getId().toString()))
+                .body(result);
     }
 
     /**
@@ -129,11 +130,40 @@ public class ChamadoResource {
     @GetMapping("/chamados")
     @Timed
     public ResponseEntity<List<Chamado>> getAllChamados(@ApiParam Pageable pageable, @RequestHeader Long clienteId)
-        throws URISyntaxException {
+            throws URISyntaxException {
         log.debug("REST request to get a page of Chamados " + clienteId);
         Page<Chamado> page = chamadoService.findAllByClienteId(pageable, clienteId);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/chamados");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+
+    @GetMapping("/proxima-sprint")
+    @Timed
+    public ResponseEntity<List<Chamado>> getProximaSprint(@RequestHeader Long clienteId)
+            throws URISyntaxException {
+        List<Chamado> toReturn = Lists.newArrayList();
+
+        Cliente cliente = chamadoService.getClientebyId(clienteId);
+        Integer horasDisponiveis = cliente.getHorasDisponiveis();
+        System.out.println("Horas disponíveis " + horasDisponiveis);
+        Integer horasUsadas = 0;
+        if (horasDisponiveis != null && horasDisponiveis > 0) {
+            List<Chamado> chamados = chamadoService.buscarChamadosQuePodemAlterarOrdem(clienteId);
+            Integer horaPorUsuario = horasDisponiveis > 40 ? horasDisponiveis / 40 : horasDisponiveis;
+            for (Chamado chamado : chamados) {
+                Integer tempoEstimado = chamado.getTempoEstimado();
+                System.out.println("Tempo Estimado " + tempoEstimado);
+                if (tempoEstimado != null) {
+                    if ((horasUsadas + tempoEstimado) < horasDisponiveis) {
+                        toReturn.add(chamado);
+                        horasUsadas = horasUsadas + tempoEstimado;
+                        System.out.println("Horas usadas " + horasUsadas);
+                    }
+                }
+            }
+        }
+        return new ResponseEntity<>(toReturn, HttpStatus.OK);
     }
 
     @GetMapping("/chamados-by-situacao/{situacao}")
@@ -141,7 +171,7 @@ public class ChamadoResource {
     public ResponseEntity<List<Chamado>> getAllChamados(@ApiParam Pageable pageable,
                                                         @PathVariable SituacaoChamado situacao,
                                                         @RequestHeader Long clienteId)
-        throws URISyntaxException {
+            throws URISyntaxException {
         log.debug("REST request to get a page of Chamados");
         Page<Chamado> page = chamadoService.findAllBySituacao(pageable, situacao, clienteId);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/chamados");
@@ -153,7 +183,7 @@ public class ChamadoResource {
     @Timed
     public ResponseEntity<List<Comentario>> getAllComentario(@ApiParam Pageable pageable,
                                                              @PathVariable Long id)
-        throws URISyntaxException {
+            throws URISyntaxException {
         log.debug("REST request to get a page of Chamados");
         Page<Comentario> page = chamadoService.findAllComentario(pageable, id);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/comentarios");
@@ -165,7 +195,7 @@ public class ChamadoResource {
     @Timed
     @Secured(AuthoritiesConstants.ATENDENTE)
     public ResponseEntity<List<SituacaoChamado>> getAllSituacoes()
-        throws URISyntaxException {
+            throws URISyntaxException {
         log.debug("REST request to get a page of Chamados");
         return new ResponseEntity<>(Lists.newArrayList(SituacaoChamado.values()), HttpStatus.OK);
     }
@@ -174,7 +204,7 @@ public class ChamadoResource {
     @GetMapping("/countar-por-situacao")
     @Timed
     public ResponseEntity<List<ChamadoPorSituacao>> contarPorSituacoes(@RequestHeader Long clienteId)
-        throws URISyntaxException {
+            throws URISyntaxException {
         log.debug("REST request to get a page of Chamados");
         return new ResponseEntity<>(chamadoService.contarPorSiuacao(clienteId), HttpStatus.OK);
     }

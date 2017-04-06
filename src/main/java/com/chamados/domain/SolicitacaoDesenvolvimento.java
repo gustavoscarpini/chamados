@@ -50,6 +50,11 @@ public class SolicitacaoDesenvolvimento implements Serializable {
     @Column(name = "criterio", length = 3000, nullable = false)
     private String criterio;
 
+    @Column(name = "versao", length = 255, nullable = false)
+    private String versao;
+
+    @Column(name = "percentual_terminado")
+    private Integer percentualTerminado;
 
     public Long getId() {
         return id;
@@ -105,6 +110,22 @@ public class SolicitacaoDesenvolvimento implements Serializable {
 
     public void setCriterio(String criterio) {
         this.criterio = criterio;
+    }
+
+    public String getVersao() {
+        return versao;
+    }
+
+    public void setVersao(String versao) {
+        this.versao = versao;
+    }
+
+    public Integer getPercentualTerminado() {
+        return percentualTerminado;
+    }
+
+    public void setPercentualTerminado(Integer percentualTerminado) {
+        this.percentualTerminado = percentualTerminado;
     }
 
     @Override

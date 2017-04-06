@@ -37,13 +37,14 @@
                         </div>
                         <div class="col-md-12">
                             <div class="table-responsive">
-                                <table class="jh-table table table-striped">
+                                <table class="jh-table table table-striped table-hover">
                                     <tbody>
-                                    <tr ng-repeat="chamado in vm.chamados track by chamado.id">
+                                    <tr ui-sref="edit-chamado({id:chamado.id})"
+                                        ng-repeat="chamado in vm.chamados track by chamado.id">
                                         <td>
                                             {{chamado.ordem}}
                                         </td>
-                                        <td class="issue-info">
+                                        <td class="issue-info" style="width: 30%">
                                             <a ui-sref="edit-chamado({id:chamado.id})">
                                                 #{{chamado.id}}
                                             </a>
@@ -51,7 +52,7 @@
                                                 {{chamado.titulo}}
                                             </small>
                                         </td>
-                                        <td class="issue-info">
+                                        <td class="issue-info" style="width: 10%">
                                             {{chamado.solicitante.firstName}}
                                             <small>
                                                 {{chamado.responsavel.firstName}}
@@ -59,24 +60,20 @@
                                         </td>
                                         <td>{{chamado.criadoEm | date:'mediumDate'}}</td>
                                         <td>
-                                            <i ng-if="chamado.tempoEstimado" class="fa fa-clock-o"></i>
-                                            {{chamado.tempoEstimado}}
+
+                                            <i ng-if="chamado.tempoEstimado" class="fa fa-clock-o"></i> {{chamado.tempoEstimado}}
                                         </td>
                                         <td>
                                             {{chamado.modulo.descricao}}
+                                        </td>
+                                        <td ng-show="!vm.situacao">
+                                            <span
+                                                data-translate="{{'chamadosApp.SituacaoChamado.' + chamado.situacao}}">{{chamado.situacao}}</span>
                                         </td>
                                         <td class="text-center">
                                             <span class="small label label-{{vm.getCorPorTipo(chamado.tipoChamado)}}">
                                             <span data-translate="{{'chamadosApp.TipoChamado.' + chamado.tipoChamado}}">{{chamado.tipoChamado}}</span>
                                            </span>
-                                        </td>
-                                        <td class="text-right">
-                                            <button type="submit"
-                                                    ui-sref="edit-chamado({id:chamado.id})"
-                                                    class="btn btn-primary btn-sm">
-                                                <span class="fa fa-eye"></span>
-                                                <span class="hidden-sm-down">Ver</span>
-                                            </button>
                                         </td>
                                     </tr>
                                     </tbody>

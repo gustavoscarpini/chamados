@@ -72,10 +72,7 @@
         }
 
         function loadAll() {
-            Chamado.query({
-                page: null,
-                size: 10
-            }, onSuccess, onError);
+            Chamado.getProximaSprint({}, onSuccess, onError);
         }
 
         function onSuccess(data) {

@@ -41,6 +41,13 @@
         </div>
 
         <div class="form-group">
+            <label class="control-label" for="field_horas">Horas Disponíveis</label>
+            <input type="text" class="form-control" name="horas" id="field_horas"
+                    ng-model="vm.cliente.horasDisponiveis"
+                    />
+        </div>
+
+        <div class="form-group">
             <label data-translate="chamadosApp.cliente.usuarios" for="field_usuarios">Usuarios</label>
             <select class="form-control" id="field_usuarios" multiple name="usuarios" ng-model="vm.cliente.usuarios" ng-options="user as user.login for user in vm.users track by user.id"></select>
         </div>

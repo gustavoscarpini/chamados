@@ -37,9 +37,12 @@ public class Cliente implements Serializable {
     @ManyToMany
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JoinTable(name = "cliente_usuarios",
-               joinColumns = @JoinColumn(name="clientes_id", referencedColumnName="id"),
-               inverseJoinColumns = @JoinColumn(name="usuarios_id", referencedColumnName="id"))
+        joinColumns = @JoinColumn(name = "clientes_id", referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "usuarios_id", referencedColumnName = "id"))
     private Set<User> usuarios = new HashSet<>();
+
+    @Column(name = "horas_disponiveis")
+    private Integer horasDisponiveis;
 
     public Long getId() {
         return id;
@@ -96,6 +99,14 @@ public class Cliente implements Serializable {
 
     public void setUsuarios(Set<User> users) {
         this.usuarios = users;
+    }
+
+    public Integer getHorasDisponiveis() {
+        return horasDisponiveis;
+    }
+
+    public void setHorasDisponiveis(Integer horasDisponiveis) {
+        this.horasDisponiveis = horasDisponiveis;
     }
 
     @Override

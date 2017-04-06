@@ -129,4 +129,11 @@
             <column name="descricao" type="varchar(255)" />
         </addColumn>
     </changeSet>
+
+    <changeSet id="20170211214039-7" author="scarpini">
+        <addColumn tableName="solicitacaodesenvolvimento">
+            <column name="versao" type="varchar(255)" />
+            <column name="percentual_terminado" type="bigint" />
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
