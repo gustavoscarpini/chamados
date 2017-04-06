@@ -52,16 +52,20 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-
         <addPrimaryKey columnNames="modulos_id, clientes_id" tableName="modulo_clientes"/>
-
     </changeSet>
-
     <changeSet id="loadModulo" author="scarpini">
         <loadData encoding="UTF-8"
                   file="config/liquibase/modulo.csv"
                   separator=";"
                   tableName="modulo">
+        </loadData>
+    </changeSet>
+    <changeSet id="loadModuloUsuario" author="scarpini">
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/modulo_usuarios.csv"
+                  separator=";"
+                  tableName="modulo_usuarios">
         </loadData>
     </changeSet>
 </databaseChangeLog>
