@@ -1,5 +1,6 @@
 package com.chamados.web.rest;
 
+import com.chamados.config.Constants;
 import com.chamados.domain.ImagemUsuario;
 import com.chamados.domain.PersistentToken;
 import com.chamados.domain.User;
@@ -167,6 +168,14 @@ public class AccountResource {
     public ResponseEntity<ImagemUsuario> getImagemAjustadaUsuario() {
         ImagemUsuario imagemUsuario = new ImagemUsuario();
         imagemUsuario.setImagemAjustada(userService.buscarImagemAjustadaUsuario());
+        return new ResponseEntity<>(imagemUsuario, HttpStatus.OK);
+    }
+
+    @GetMapping("/imagem-ajustada-usuario/{login:" + Constants.LOGIN_REGEX + "}")
+    @Timed
+    public ResponseEntity<ImagemUsuario> getImagemAjustadaUsuario(@PathVariable String login) {
+        ImagemUsuario imagemUsuario = new ImagemUsuario();
+        imagemUsuario.setImagemAjustada(userService.buscarImagemAjustadaUsuario(login));
         return new ResponseEntity<>(imagemUsuario, HttpStatus.OK);
     }
 

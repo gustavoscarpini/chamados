@@ -266,11 +266,11 @@ public class UserService {
     public ImagemUsuario salvarImagemUsuario(ImagemUsuario imagem) {
         User userWithAuthorities = getUserWithAuthorities();
         ImagemUsuario existente = imagemUsuarioRepository.findFirstByUsuario(userWithAuthorities);
-        if(existente != null){
+        if (existente != null) {
             existente.setImagemAjustada(imagem.getImagemAjustada());
             existente.setImagemOriginal(imagem.getImagemOriginal());
             return imagemUsuarioRepository.save(existente);
-        }else{
+        } else {
             imagem.setUsuario(userWithAuthorities);
             return imagemUsuarioRepository.save(imagem);
         }
@@ -283,5 +283,9 @@ public class UserService {
 
     public String buscarImagemAjustadaUsuario() {
         return imagemUsuarioRepository.findImagemAjustadaByUsuario();
+    }
+
+    public String buscarImagemAjustadaUsuario(String login) {
+        return imagemUsuarioRepository.findImagemAjustadaByUsuario(login);
     }
 }

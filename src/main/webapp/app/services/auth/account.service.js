@@ -26,6 +26,10 @@
                 method: 'GET',
                 url: 'api/imagem-ajustada-usuario',
             },
+            'getImagemAjustadaByLogin': {
+                method: 'GET',
+                url: 'api/imagem-ajustada-usuario/:login',
+            },
             'saveImagem': {
                 method: 'POST',
                 url: 'api/imagem-usuario',

@@ -5,9 +5,9 @@
         .module('chamadosApp')
         .controller('ChamadoEditController', ChamadoEditController);
 
-    ChamadoEditController.$inject = ['$timeout', '$scope', '$state', 'previousState', 'entity', 'Chamado', 'User', 'Cliente', 'Modulo', 'Principal', '$uibModal', 'Notificacao', 'Upload', 'AnexoChamado'];
+    ChamadoEditController.$inject = ['$timeout', '$scope', '$state', 'previousState', 'entity', 'Chamado', 'User', 'Cliente', 'Modulo', 'Principal', '$uibModal', 'Notificacao', 'Upload', 'AnexoChamado', 'Account'];
 
-    function ChamadoEditController($timeout, $scope, $state, previousState, entity, Chamado, User, Cliente, Modulo, Principal, $uibModal, Notificacao, Upload, AnexoChamado) {
+    function ChamadoEditController($timeout, $scope, $state, previousState, entity, Chamado, User, Cliente, Modulo, Principal, $uibModal, Notificacao, Upload, AnexoChamado, Account) {
         var vm = this;
         vm.chamado = entity;
         vm.ordemOriginal = vm.chamado.ordem;
@@ -34,7 +34,14 @@
 
         $timeout(function () {
             angular.element('.form-group:eq(1)>input').focus();
-            vm.comentarios = vm.chamado.id ? Chamado.getComentarios({id: vm.chamado.id}) : [];
+            Chamado.getComentarios({id: vm.chamado.id}, function (data) {
+                vm.comentarios = data;
+                angular.forEach(vm.comentarios, function (comentario) {
+                    Account.getImagemAjustadaByLogin({login: comentario.usuario.login}, function (data) {
+                        comentario.imagemUsuario = data.imagemAjustada;
+                    });
+                })
+            });
             vm.chamado.id ? Chamado.getSolicitacoes({id: vm.chamado.id}, function (data) {
                 vm.solicitacoes = data;
             }, function (error) {

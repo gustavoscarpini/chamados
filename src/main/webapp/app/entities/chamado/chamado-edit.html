@@ -304,7 +304,13 @@
                                         ng-repeat="comentario in vm.comentarios">
                                         <a href="#"
                                            class="{{comentario.usuario.id == vm.chamado.solicitante.id? 'pull-left' : 'pull-right'}}">
-                                            <img alt="image" class="img-circle" ng-src="/content/images/mayka.PNG">
+
+                                            <img ng-src="{{comentario.imagemUsuario}}"
+                                                 ng-show="comentario.imagemUsuario"
+                                                 class="img-circle"/>
+                                            <img alt="image" class="img-circle"
+                                                 ng-show="!comentario.imagemUsuario"
+                                                 ng-src="/content/images/user-default.jpg"/>
                                         </a>
                                         <div
                                             class="media-body {{comentario.usuario.id == vm.chamado.solicitante.id? '' : 'text-right'}}">
