@@ -18,14 +18,16 @@ public interface ChamadoRepository extends JpaRepository<Chamado, Long> {
 
 
     @Query("select chamado from Chamado chamado " +
-        " where chamado.solicitante.login = ?#{principal.username} " +
+        " left join chamado.modulo.usuarios solicitantesModulo " +
+        " where (chamado.solicitante.login = ?#{principal.username} or solicitantesModulo.login = ?#{principal.username})" +
         " and chamado.situacao = :situacao " +
         " and chamado.cliente.id = :clienteId " +
         " order by chamado.ordem")
     Page<Chamado> findAllBySituacaoAndSolicitante(Pageable pageable, @Param("situacao") SituacaoChamado situacao, @Param("clienteId") Long clienteId);
 
     @Query("select chamado from Chamado chamado " +
-        " where chamado.responsavel.login = ?#{principal.username} " +
+        "  left join chamado.modulo.usuarios solicitantesModulo " +
+        " where (chamado.responsavel.login = ?#{principal.username} or solicitantesModulo.login = ?#{principal.username})" +
         " and chamado.situacao = :situacao " +
         " and chamado.cliente.id = :clienteId " +
         " order by chamado.ordem")
@@ -33,7 +35,8 @@ public interface ChamadoRepository extends JpaRepository<Chamado, Long> {
 
     @Query("select chamado from Chamado chamado " +
         " left join chamado.responsavel rel " +
-        " where (rel is null or rel.login = ?#{principal.username})" +
+        "  left join chamado.modulo.usuarios solicitantesModulo " +
+        " where (rel is null or rel.login = ?#{principal.username} or solicitantesModulo.login = ?#{principal.username})" +
         " and chamado.situacao = 'ABERTO' " +
         " and chamado.cliente.id = :clienteId " +
         " order by chamado.ordem")
@@ -47,7 +50,8 @@ public interface ChamadoRepository extends JpaRepository<Chamado, Long> {
 
     @Query("select count(chamado.id) from Chamado chamado " +
         " left join chamado.responsavel resp" +
-        " where (chamado.solicitante.login = ?#{principal.username} or  resp is null or resp.login = ?#{principal.username} )" +
+        "  left join chamado.modulo.usuarios solicitantesModulo " +
+        " where (chamado.solicitante.login = ?#{principal.username} or  resp is null or resp.login = ?#{principal.username} or solicitantesModulo.login = ?#{principal.username})" +
         " and chamado.situacao = :situacao " +
         " and chamado.cliente.id = :clienteId")
     Integer countBySituacao(@Param("situacao") SituacaoChamado situacao, @Param("clienteId") Long clienteId);

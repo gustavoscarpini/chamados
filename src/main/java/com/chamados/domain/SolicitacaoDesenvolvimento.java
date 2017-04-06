@@ -45,8 +45,7 @@ public class SolicitacaoDesenvolvimento implements Serializable {
     private String conteudo;
 
     @NotNull
-    @Size(min = 2, max = 3000)
-    @Column(name = "criterio", length = 3000, nullable = false)
+    @Column(name = "criterio", nullable = false)
     private String criterio;
 
     @Column(name = "versao", length = 255, nullable = false)
