@@ -17,7 +17,7 @@ import java.util.List;
 public interface ChamadoRepository extends JpaRepository<Chamado, Long> {
 
 
-    @Query("select chamado from Chamado chamado " +
+    @Query("select distinct chamado from Chamado chamado " +
         " left join chamado.modulo.usuarios solicitantesModulo " +
         " where (chamado.solicitante.login = ?#{principal.username} or solicitantesModulo.login = ?#{principal.username})" +
         " and chamado.situacao = :situacao " +
@@ -25,7 +25,7 @@ public interface ChamadoRepository extends JpaRepository<Chamado, Long> {
         " order by chamado.ordem")
     Page<Chamado> findAllBySituacaoAndSolicitante(Pageable pageable, @Param("situacao") SituacaoChamado situacao, @Param("clienteId") Long clienteId);
 
-    @Query("select chamado from Chamado chamado " +
+    @Query("select distinct chamado from Chamado chamado " +
         "  left join chamado.modulo.usuarios solicitantesModulo " +
         " where (chamado.responsavel.login = ?#{principal.username} or solicitantesModulo.login = ?#{principal.username})" +
         " and chamado.situacao = :situacao " +
@@ -33,7 +33,7 @@ public interface ChamadoRepository extends JpaRepository<Chamado, Long> {
         " order by chamado.ordem")
     Page<Chamado> findAllBySituacaoAndAtendente(Pageable pageable, @Param("situacao") SituacaoChamado situacao, @Param("clienteId") Long clienteId);
 
-    @Query("select chamado from Chamado chamado " +
+    @Query("select distinct chamado from Chamado chamado " +
         " left join chamado.responsavel rel " +
         "  left join chamado.modulo.usuarios solicitantesModulo " +
         " where (rel is null or rel.login = ?#{principal.username} or solicitantesModulo.login = ?#{principal.username})" +
@@ -48,7 +48,7 @@ public interface ChamadoRepository extends JpaRepository<Chamado, Long> {
         " and chamado.cliente.id = :clienteId ")
     Integer buscarUltimaOrdemDisponivel(@Param("clienteId") Long clienteId);
 
-    @Query("select count(chamado.id) from Chamado chamado " +
+    @Query("select count(distinct chamado.id) from Chamado chamado " +
         " left join chamado.responsavel resp" +
         "  left join chamado.modulo.usuarios solicitantesModulo " +
         " where (chamado.solicitante.login = ?#{principal.username} or  resp is null or resp.login = ?#{principal.username} or solicitantesModulo.login = ?#{principal.username})" +
