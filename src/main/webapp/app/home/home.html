@@ -39,6 +39,22 @@
                             <div class="table-responsive">
                                 <table class="jh-table table table-striped table-hover">
                                     <tbody>
+                                    <tr>
+                                        <th>Ordem</th>
+                                        <th class="issue-info">
+                                            Nº do chamado
+                                            <small>Titulo</small>
+                                        </th>
+                                        <th class="issue-info">
+                                            Solicitante
+                                            <small>Responsável</small>
+                                        </th>
+                                        <th>Data</th>
+                                        <th>Tempo</th>
+                                        <th>Módulo</th>
+                                        <th>Situação</th>
+                                        <th>Tipo</th>
+                                    </tr>
                                     <tr
                                         ng-repeat="chamado in vm.chamados track by chamado.id">
                                         <td>
