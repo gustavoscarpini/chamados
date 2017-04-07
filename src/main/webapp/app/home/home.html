@@ -61,7 +61,8 @@
                                         <td>{{chamado.criadoEm | date:'mediumDate'}}</td>
                                         <td>
 
-                                            <i ng-if="chamado.tempoEstimado" class="fa fa-clock-o"></i> {{chamado.tempoEstimado}}
+                                            <i ng-if="chamado.tempoEstimado" class="fa fa-clock-o"></i>
+                                            {{chamado.tempoEstimado}}
                                         </td>
                                         <td>
                                             {{chamado.modulo.descricao}}
@@ -86,33 +87,44 @@
         </div>
     </div>
     <div class="row" ng-switch-when="true">
-        <div class="col-md-6">
+
+        <div class="col-md-6 text-center">
             <div class="ibox">
                 <div class="ibox-title">
-                    Chamados fechados por sprint
+                   Próxima Sprint por módulo
                 </div>
                 <div class="ibox-content">
                     <div class="row">
-                        <canvas id="bar" class="chart chart-bar"
+                        <canvas id="piemodulo" class="chart chart-pie"
                                 style="display: block; width: 523px; height: 261px;"
-                                chart-data="vm.dataBar" chart-labels="vm.labelsBar" chart-series="vm.seriesBar">
+                                chart-data="vm.dataModulo" chart-labels="vm.labelsModulo">
                         </canvas>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4" ng-repeat="modulo in vm.labelsModulo">
+                            {{modulo}} <span class="font-bold text-navy">{{vm.dataModulo[$index] | number}}</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-6 text-center">
             <div class="ibox">
                 <div class="ibox-title">
-                    Chamados abertos por tipo
+                   Próxima Sprint por tipo
                 </div>
                 <div class="ibox-content">
                     <div class="row">
-                        <canvas id="pie" class="chart chart-pie"
+                        <canvas id="pietipo" class="chart chart-pie"
                                 style="display: block; width: 523px; height: 261px;"
-                                chart-data="vm.dataPie" chart-labels="vm.labelsPie">
+                                chart-data="vm.dataTipo" chart-labels="vm.labelsTipo">
                         </canvas>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4" ng-repeat="tipo in vm.labelsTipo">
+                            {{tipo}} <span class="font-bold text-navy">{{vm.dataTipo[$index] | number}}</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -131,12 +143,13 @@
                                     <h5 data-translate="{{'chamadosApp.SituacaoChamado.' + situacao.situacaoChamado}}">
                                         {{situacao.situacaoChamado}}</h5>
                                 </div>
-                                <div class="ibox-content">
+                                <div class="ibox-content text-center">
                                     <h1 class="no-margins">{{situacao.quantidade}}</h1>
+                                    <small>Na fila</small>
                                     <div
-                                        class="stat-percent font-bold text-{{vm.getCorPorSituacao(situacao.situacaoChamado)}}">
-                                        {{situacao.percentual}}% <i class="fa fa-bolt"></i></div>
-                                    <small>Total income</small>
+                                        class="font-bold text-{{vm.getCorPorSituacao(situacao.situacaoChamado)}}">
+                                        {{situacao.percentual | number}}%
+                                        <i class="fa fa-bolt"></i></div>
                                 </div>
                             </div>
                         </div>

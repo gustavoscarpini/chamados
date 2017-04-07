@@ -224,7 +224,7 @@ public class ChamadoService {
                     chamado.setSituacao(SituacaoChamado.EM_DESENVOLVIMENTO);
                     chamadoRepository.save(chamado);
                 }
-                if(chamado.getTempoEstimado() == null && ticket.getEstimatedHours() != null){
+                if (chamado.getTempoEstimado() == null && ticket.getEstimatedHours() != null) {
                     chamado.setTempoEstimado(ticket.getEstimatedHours().intValue());
                     chamadoRepository.save(chamado);
                 }
@@ -232,7 +232,7 @@ public class ChamadoService {
                 solicitacao.setSituacao(ticket.getStatusName());
                 solicitacaoDesenvolvimentoRepository.save(solicitacao);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("Não foi possivel integrar o chamado {} {}", solicitacao.getChamado(), e);
             }
         }
 

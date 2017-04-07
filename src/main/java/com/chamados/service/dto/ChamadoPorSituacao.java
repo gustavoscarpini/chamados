@@ -6,6 +6,7 @@ public class ChamadoPorSituacao {
     SituacaoChamado situacaoChamado;
     Integer quantidade;
 
+
     public ChamadoPorSituacao() {
     }
 

@@ -147,4 +147,6 @@ public class SolicitacaoDesenvolvimento implements Serializable {
         result = 31 * result + (chamado != null ? chamado.hashCode() : 0);
         return result;
     }
+
+
 }

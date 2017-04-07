@@ -18,14 +18,6 @@
         vm.register = register;
         vm.chamados = [];
 
-        vm.labelsBar = ['201703_04', '201703_05', '201704_01'];
-        vm.seriesBar = ['Bug', 'Melhoria', 'Novas Funcionalidades', 'Suporte'];
-
-        vm.dataBar = [
-            [65, 59, 80, 81],
-            [28, 48, 40, 19],
-            [28, 48, 40, 19]
-        ];
 
         $scope.$on('authenticationSuccess', function () {
             getAccount();
@@ -41,24 +33,9 @@
 
         function montarDashBoard() {
             Chamado.contarPorSituacao({}, function (data) {
-                vm.labelsPie = [];
-                vm.dataPie = [];
                 vm.situacoes = data;
-                var total = 0;
-                angular.forEach(vm.situacoes, function (situacao) {
-                    total = total + situacao.quantidade;
-                    vm.labelsPie.push(situacao.situacaoChamado);
-                });
-
-                angular.forEach(vm.situacoes, function (situacao) {
-                    situacao.percentual = (situacao.quantidade * 100) / total;
-                    vm.dataPie.push(situacao.percentual);
-                });
-
             });
         }
-
-
 
         function getAccount() {
             Principal.identity().then(function (account) {
@@ -77,6 +54,36 @@
 
         function onSuccess(data) {
             vm.chamados = data;
+
+            vm.labelsModulo = [];
+            vm.labelsTipo = [];
+            vm.dataModulo = [];
+            vm.dataTipo = [];
+            vm.totalPorTipo = {};
+            vm.totalPorModulo = {};
+
+            angular.forEach(vm.chamados, function (chamado) {
+                if (!vm.totalPorTipo[chamado.tipoChamado]) {
+                    vm.totalPorTipo[chamado.tipoChamado] = 0;
+                }
+                vm.totalPorTipo[chamado.tipoChamado] = vm.totalPorTipo[chamado.tipoChamado] + chamado.tempoEstimado;
+
+                if (!vm.totalPorModulo[chamado.modulo.descricao]) {
+                    vm.totalPorModulo[chamado.modulo.descricao] = 0;
+                }
+                vm.totalPorModulo[chamado.modulo.descricao] = vm.totalPorModulo[chamado.modulo.descricao] + chamado.tempoEstimado;
+            });
+
+            angular.forEach(vm.totalPorModulo, function (total, modulo) {
+                vm.labelsModulo.push(modulo);
+                vm.dataModulo.push(total);
+            });
+            angular.forEach(vm.totalPorTipo, function (total, tipo) {
+                vm.labelsTipo.push(tipo);
+                vm.dataTipo.push(total);
+            });
+
+
         }
 
         function onError(error) {

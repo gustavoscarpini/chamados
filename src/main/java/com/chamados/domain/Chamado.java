@@ -256,11 +256,7 @@ public class Chamado implements Serializable {
         return "Chamado{" +
             "id=" + id +
             ", titulo='" + titulo + "'" +
-            ", conteudo='" + conteudo + "'" +
             ", tipoChamado='" + tipoChamado + "'" +
-            ", criadoEm='" + criadoEm + "'" +
-            ", prazo='" + prazo + "'" +
-            ", ordem='" + ordem + "'" +
             '}';
     }
 }
