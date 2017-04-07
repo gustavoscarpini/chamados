@@ -25,10 +25,17 @@
                 <div class="row">
                     <form name="editForm" role="form" novalidate ng-submit="vm.save()" show-validation>
 
-                        <div class="form-group col-md-12" ng-show="vm.chamado.id">
+                        <div class="form-group {{vm.chamado.ticketLegado? 'col-md-6': 'col-md-12'}}"
+                             ng-show="vm.chamado.id">
                             <label for="id" data-translate="global.field.id">ID</label>
                             <input type="text" class="form-control" id="id" name="id"
                                    ng-model="vm.chamado.id" readonly/>
+                        </div>
+                        <div class="form-group col-md-6"
+                             ng-show="vm.chamado.ticketLegado">
+                            <label for="id">Ticket Redmine</label>
+                            <input type="text" class="form-control" id="ticketLegado" name="ticketLegado"
+                                   ng-model="vm.chamado.ticketLegado" readonly/>
                         </div>
 
                         <div class="form-group col-md-4">
@@ -75,7 +82,7 @@
                         <div class="form-group col-md-2">
                             <label class="control-label" data-translate="chamadosApp.chamado.ordem" for="field_ordem">Ordem</label>
                             <input type="number"
-                                   ng-disabled="(vm.chamado.id && vm.chamado.situacao != 'ABERTO'
+                                   ng-readonly="(vm.chamado.id && vm.chamado.situacao != 'ABERTO'
                                    && vm.chamado.id && vm.chamado.situacao != 'EM_SUPORTE'
                                     && vm.chamado.id && vm.chamado.situacao != 'AGUARDANDO_DESENVOLVIMENTO') || (vm.account.id != vm.chamado.solicitante.id)"
                                    class="form-control" name="ordem" id="field_ordem"
@@ -117,7 +124,7 @@
                             <label class="control-label" data-translate="chamadosApp.chamado.titulo"
                                    for="field_titulo">Titulo</label>
                             <input type="text"
-                                   ng-disabled="(vm.chamado.id && vm.chamado.situacao != 'ABERTO') || (vm.account.id != vm.chamado.solicitante.id)"
+                                   ng-readonly="(vm.chamado.id && vm.chamado.situacao != 'ABERTO') || (vm.account.id != vm.chamado.solicitante.id)"
                                    class="form-control" name="titulo" id="field_titulo"
                                    ng-model="vm.chamado.titulo"
                                    required ng-minlength="2" ng-maxlength="255"/>
@@ -146,7 +153,7 @@
                             <label class="control-label" data-translate="chamadosApp.chamado.conteudo"
                                    for="field_conteudo">Conteudo</label>
                             <textarea type="text" class="form-control"
-                                      ng-disabled="(vm.chamado.id && vm.chamado.situacao != 'ABERTO') || (vm.account.id != vm.chamado.solicitante.id)"
+                                      ng-readonly="(vm.chamado.id && vm.chamado.situacao != 'ABERTO') || (vm.account.id != vm.chamado.solicitante.id)"
                                       name="conteudo" id="field_conteudo"
                                       rows="10"
                                       style="overflow: auto"

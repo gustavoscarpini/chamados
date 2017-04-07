@@ -15,7 +15,7 @@
             "account": {
                 "main": "Conta",
                 "settings": "Configuração",
-                "password": "Palavra-passe",
+                "password": "Senha",
                 "sessions": "Sessões",
                 "login": "Entrar",
                 "logout": "Sair",
@@ -39,32 +39,32 @@
         "form": {
             "username": "Nome de utilizador",
             "username.placeholder": "O seu nome de utilizador",
-            "newpassword": "Nova palavra-passe",
-            "newpassword.placeholder": "Nova palavra-passe",
-            "confirmpassword": "Confirmação de nova palavra-passe",
-            "confirmpassword.placeholder": "Confirme a nova palavra-passe",
+            "newpassword": "Nova senha",
+            "newpassword.placeholder": "Nova senha",
+            "confirmpassword": "Confirmação de nova senha",
+            "confirmpassword.placeholder": "Confirme a nova senha",
             "email": "E-mail",
             "email.placeholder": "O seu e-mail"
         },
         "messages": {
             "info": {
-                "authenticated": "Para <a class=\"alert-link\" href=\"\" ng-click=\"vm.login()\">entrar</a>, utilize as seguintes contas:<br/>- Administrador (utilizador=\"admin\" e palavra-passe=\"admin\") <br/>- Utilizador (utilizador=\"user\" e palavra-passe=\"user\").",
+                "authenticated": "Para <a class=\"alert-link\" href=\"\" ng-click=\"vm.login()\">entrar</a>, utilize as seguintes contas:<br/>- Administrador (utilizador=\"admin\" e senha=\"admin\") <br/>- Utilizador (utilizador=\"user\" e senha=\"user\").",
                 "register": "Ainda não tem uma conta? <a class=\"alert-link\" href=\"\" ng-click=\"vm.register()\">Crie uma nova conta</a>"
             },
             "error": {
-                "dontmatch" : "A palavra-passe e a sua confirmação devem ser iguais!"
+                "dontmatch" : "A senha e a sua confirmação devem ser iguais!"
             },
             "validate": {
                 "newpassword": {
-                    "required": "A palavra-passe é obrigatória.",
-                    "minlength": "A palavra-passe deve ter pelo menos 5 caracteres",
-                    "maxlength": "A palavra-passe não pode ter mais de 50 caracteres",
-                    "strength": "Nível de dificuldade da palavra-passe:"
+                    "required": "A senha é obrigatória.",
+                    "minlength": "A senha deve ter pelo menos 5 caracteres",
+                    "maxlength": "A senha não pode ter mais de 50 caracteres",
+                    "strength": "Nível de dificuldade da senha:"
                 },
                 "confirmpassword": {
-                    "required": "A confirmação da palavra-passe é obrigatória.",
-                    "minlength": "A confirmação da palavra-passe deve ter pelo menos 5 caracteres",
-                    "maxlength": "A confirmação da palavra-passe não pode ter mais de 50 caracteres"
+                    "required": "A confirmação da senha é obrigatória.",
+                    "minlength": "A confirmação da senha deve ter pelo menos 5 caracteres",
+                    "maxlength": "A confirmação da senha não pode ter mais de 50 caracteres"
                 },
                 "email": {
                     "required": "O e-mail é obrigatório.",

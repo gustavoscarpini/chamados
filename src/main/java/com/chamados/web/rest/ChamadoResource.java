@@ -9,6 +9,7 @@ import com.chamados.security.AuthoritiesConstants;
 import com.chamados.service.ChamadoService;
 import com.chamados.service.UserService;
 import com.chamados.service.dto.ChamadoPorSituacao;
+import com.chamados.service.dto.SprintDTO;
 import com.chamados.web.rest.util.HeaderUtil;
 import com.chamados.web.rest.util.PaginationUtil;
 import com.codahale.metrics.annotation.Timed;
@@ -69,8 +70,8 @@ public class ChamadoResource {
         }
         Chamado result = chamadoService.save(chamado);
         return ResponseEntity.created(new URI("/api/chamados/" + result.getId()))
-                .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
-                .body(result);
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
     }
 
     @PostMapping("/chamados-aceitar")
@@ -82,8 +83,8 @@ public class ChamadoResource {
         chamado.setSituacao(SituacaoChamado.EM_SUPORTE);
         Chamado result = chamadoService.save(chamado);
         return ResponseEntity.created(new URI("/api/chamados/" + result.getId()))
-                .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
-                .body(result);
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
     }
 
 
@@ -94,8 +95,8 @@ public class ChamadoResource {
         comentario.setCriadoEm(LocalDateTime.now());
         Comentario result = chamadoService.comentar(comentario);
         return ResponseEntity.created(new URI("/api/chamados/" + result.getId()))
-                .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
-                .body(result);
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
     }
 
     /**
@@ -116,8 +117,8 @@ public class ChamadoResource {
         }
         Chamado result = chamadoService.save(chamado);
         return ResponseEntity.ok()
-                .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, chamado.getId().toString()))
-                .body(result);
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, chamado.getId().toString()))
+            .body(result);
     }
 
     /**
@@ -130,7 +131,7 @@ public class ChamadoResource {
     @GetMapping("/chamados")
     @Timed
     public ResponseEntity<List<Chamado>> getAllChamados(@ApiParam Pageable pageable, @RequestHeader Long clienteId)
-            throws URISyntaxException {
+        throws URISyntaxException {
         log.debug("REST request to get a page of Chamados " + clienteId);
         Page<Chamado> page = chamadoService.findAllByClienteId(pageable, clienteId);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/chamados");
@@ -141,7 +142,7 @@ public class ChamadoResource {
     @GetMapping("/proxima-sprint")
     @Timed
     public ResponseEntity<List<Chamado>> getProximaSprint(@RequestHeader Long clienteId)
-            throws URISyntaxException {
+        throws URISyntaxException {
         List<Chamado> toReturn = Lists.newArrayList();
 
         Cliente cliente = chamadoService.getClientebyId(clienteId);
@@ -166,12 +167,20 @@ public class ChamadoResource {
         return new ResponseEntity<>(toReturn, HttpStatus.OK);
     }
 
+    @GetMapping("/proximas-sprints")
+    @Timed
+    public ResponseEntity<List<SprintDTO>> getProximasSprint(@RequestHeader Long clienteId)
+        throws URISyntaxException {
+        List<SprintDTO> sprints = chamadoService.calcularTodasSprints(clienteId);
+        return new ResponseEntity<>(sprints, HttpStatus.OK);
+    }
+
     @GetMapping("/chamados-by-situacao/{situacao}")
     @Timed
     public ResponseEntity<List<Chamado>> getAllChamados(@ApiParam Pageable pageable,
                                                         @PathVariable SituacaoChamado situacao,
                                                         @RequestHeader Long clienteId)
-            throws URISyntaxException {
+        throws URISyntaxException {
         log.debug("REST request to get a page of Chamados");
         Page<Chamado> page = chamadoService.findAllBySituacao(pageable, situacao, clienteId);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/chamados");
@@ -183,7 +192,7 @@ public class ChamadoResource {
     @Timed
     public ResponseEntity<List<Comentario>> getAllComentario(@ApiParam Pageable pageable,
                                                              @PathVariable Long id)
-            throws URISyntaxException {
+        throws URISyntaxException {
         log.debug("REST request to get a page of Chamados");
         Page<Comentario> page = chamadoService.findAllComentario(pageable, id);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/comentarios");
@@ -195,7 +204,7 @@ public class ChamadoResource {
     @Timed
     @Secured(AuthoritiesConstants.ATENDENTE)
     public ResponseEntity<List<SituacaoChamado>> getAllSituacoes()
-            throws URISyntaxException {
+        throws URISyntaxException {
         log.debug("REST request to get a page of Chamados");
         return new ResponseEntity<>(Lists.newArrayList(SituacaoChamado.values()), HttpStatus.OK);
     }
@@ -204,7 +213,7 @@ public class ChamadoResource {
     @GetMapping("/countar-por-situacao")
     @Timed
     public ResponseEntity<List<ChamadoPorSituacao>> contarPorSituacoes(@RequestHeader Long clienteId)
-            throws URISyntaxException {
+        throws URISyntaxException {
         log.debug("REST request to get a page of Chamados");
         return new ResponseEntity<>(chamadoService.contarPorSiuacao(clienteId), HttpStatus.OK);
     }

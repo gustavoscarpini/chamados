@@ -76,6 +76,10 @@ public class Chamado implements Serializable {
     @ManyToOne
     private Modulo modulo;
 
+    @Column(name = "ticket_legado", nullable = false)
+    private Integer ticketLegado;
+
+
     public Long getId() {
         return id;
     }
@@ -229,6 +233,14 @@ public class Chamado implements Serializable {
     public Chamado modulo(Modulo modulo) {
         this.modulo = modulo;
         return this;
+    }
+
+    public Integer getTicketLegado() {
+        return ticketLegado;
+    }
+
+    public void setTicketLegado(Integer ticketLegado) {
+        this.ticketLegado = ticketLegado;
     }
 
     @Override

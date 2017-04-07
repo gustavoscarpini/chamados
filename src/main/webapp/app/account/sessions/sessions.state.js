@@ -9,7 +9,7 @@
 
     function stateConfig($stateProvider) {
         $stateProvider.state('sessions', {
-            parent: 'account',
+            parent: 'entity',
             url: '/sessions',
             data: {
                 authorities: ['ROLE_USER'],

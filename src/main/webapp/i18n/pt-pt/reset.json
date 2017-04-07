@@ -1,26 +1,26 @@
 {
     "reset": {
         "request": {
-            "title": "Reponha a palavra-passe",
+            "title": "Reponha a senha",
             "form": {
-                "button": "Reposição da palavra-passe"
+                "button": "Reposição da senha"
             },
             "messages": {
                 "info": "Introduza o endereço de e-mail utilizado para registar",
-                "success": "Verifique o seu e-mail para mais detalhes sobre como repor a palavra-passe.",
+                "success": "Verifique o seu e-mail para mais detalhes sobre como repor a senha.",
                 "notfound": "<strong>Endereço de e-mail não registado!</strong> Por favor verifique e tente de novo"
             }
         },
         "finish" : {
-            "title": "Reposição da palavra-passe",
+            "title": "Reposição da senha",
             "form": {
-                "button": "Repor a palavra-passe"
+                "button": "Repor a senha"
             },
             "messages": {
-                "info": "Escolha uma nova palavra-passe",
-                "success": "<strong>A sua palavra-passe foi reposta.</strong> Por favor <a class=\"alert-link\" href=\"\" ng-click=\"vm.login()\">autentique-se</a>.",
+                "info": "Escolha uma nova senha",
+                "success": "<strong>A sua senha foi reposta.</strong> Por favor <a class=\"alert-link\" href=\"\" ng-click=\"vm.login()\">autentique-se</a>.",
                 "keymissing": "Chave de reposição em falta.",
-                "error": "A sua palavra-passe não pode ser reposta. O pedido de reposição da palavra-passe é válido apenas por 24 horas."
+                "error": "A sua senha não pode ser reposta. O pedido de reposição da senha é válido apenas por 24 horas."
             }
         }
     }

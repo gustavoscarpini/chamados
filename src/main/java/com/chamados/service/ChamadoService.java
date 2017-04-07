@@ -8,6 +8,7 @@ import com.chamados.repository.ComentarioRepository;
 import com.chamados.repository.SolicitacaoDesenvolvimentoRepository;
 import com.chamados.security.AuthoritiesConstants;
 import com.chamados.service.dto.ChamadoPorSituacao;
+import com.chamados.service.dto.SprintDTO;
 import com.google.common.collect.Lists;
 import com.taskadapter.redmineapi.RedmineException;
 import com.taskadapter.redmineapi.RedmineManager;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -248,5 +250,40 @@ public class ChamadoService {
 
     public List<Chamado> buscarChamadosQuePodemAlterarOrdem(Long clienteId) {
         return chamadoRepository.buscarChamadosQuePodemAlterarOrdem(0, clienteId);
+    }
+
+    public List<SprintDTO> calcularTodasSprints(Long clienteId) {
+        List<SprintDTO> sprints = Lists.newArrayList();
+        Cliente cliente = getClientebyId(clienteId);
+        Integer horasDisponiveis = cliente.getHorasDisponiveis();
+        List<Chamado> chamados = buscarChamadosQuePodemAlterarOrdem(clienteId);
+        chamados = chamados.stream()
+            .filter(chamado -> chamado.getTempoEstimado() != null)
+            .collect(Collectors.toList());
+
+        int totalHoras = chamados.stream().mapToInt(chamado -> chamado.getTempoEstimado()).sum();
+        int quantidadeSprints = totalHoras / horasDisponiveis;
+
+        LocalDate hoje = LocalDate.now();
+        DateTimeFormatter sd = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        for (int i = 0; i < quantidadeSprints; i++) {
+            SprintDTO sprint = new SprintDTO();
+            hoje = hoje.plusWeeks(1);
+            sprint.setDescricao("Sprint " + (i + 1) + " de " + hoje.format(sd) + " a " + hoje.plusWeeks(1).format(sd));
+            int horasUsadas = 0;
+            for (Chamado chamado : chamados) {
+                Integer tempoEstimado = chamado.getTempoEstimado();
+                if ((horasUsadas + tempoEstimado) < horasDisponiveis) {
+                    sprint.getChamados().add(chamado);
+                    horasUsadas = horasUsadas + tempoEstimado;
+                } else {
+                    break;
+                }
+            }
+            sprint.setTempo(horasUsadas);
+            chamados.removeAll(sprint.getChamados());
+            sprints.add(sprint);
+        }
+        return sprints;
     }
 }

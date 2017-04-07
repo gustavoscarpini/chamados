@@ -2,8 +2,8 @@
     "login": {
         "title": "Autenticação",
         "form": {
-            "password": "Palavra-passe",
-            "password.placeholder": "A sua palavra-passe",
+            "password": "Senha",
+            "password.placeholder": "A sua senha",
             "rememberme": "Manter-me ligado",
             "button": "Entrar"
         },
@@ -13,7 +13,7 @@
             }
         },
         "password" : {
-            "forgot": "Esqueceu-se da sua palavra-passe?"
+            "forgot": "Esqueceu-se da sua senha?"
         }
     }
 }

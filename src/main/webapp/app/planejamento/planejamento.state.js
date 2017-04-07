@@ -1,4 +1,4 @@
-(function() {
+(function () {
     'use strict';
 
     angular
@@ -8,26 +8,28 @@
     stateConfig.$inject = ['$stateProvider'];
 
     function stateConfig($stateProvider) {
-        $stateProvider.state('password', {
-            parent: 'entity',
-            url: '/password',
+        $stateProvider.state('planejamento', {
+            parent: 'app',
+            url: '/planejamento',
             data: {
                 authorities: ['ROLE_USER'],
-                pageTitle: 'global.menu.account.password'
             },
             views: {
                 'content@': {
-                    templateUrl: 'app/account/password/password.html',
-                    controller: 'PasswordController',
+                    templateUrl: 'app/planejamento/planejamento.html',
+                    controller: 'PlanejamentoController',
                     controllerAs: 'vm'
                 }
             },
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('password');
+                    $translatePartialLoader.addPart('global');
+                    $translatePartialLoader.addPart('home');
+                    $translatePartialLoader.addPart('situacaoChamado');
+                    $translatePartialLoader.addPart('tipoChamado');
                     return $translate.refresh();
                 }]
             }
-        });
+        })
     }
 })();

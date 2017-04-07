@@ -40,6 +40,11 @@
                 url: 'api/proxima-sprint',
                 isArray: true
             },
+            'getProximasSprints': {
+                method: 'GET',
+                url: 'api/proximas-sprints',
+                isArray: true
+            },
             'queryBySituacao': {
                 method: 'GET',
                 url: 'api/chamados-by-situacao/:situacao',

@@ -1,0 +1,58 @@
+<div class="ibox">
+    <div class="ibox-title">
+        Planejamento das Sprints
+        <div class="ibox-tools">
+            <a ui-sref="new-chamado" class="btn btn-primary btn-xs">
+                <span class="glyphicon glyphicon-plus"></span>
+                <span class="hidden-sm">Novo Chamado</span>
+            </a>
+        </div>
+    </div>
+    <div class="ibox-content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default" ng-repeat="sprint in vm.sprints">
+                    <div class="panel-heading">
+                        {{sprint.descricao}} -   <i class="fa fa-clock-o"></i> {{sprint.tempo}}h
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <table class="table small">
+                                <tr ng-repeat="chamado in sprint.chamados">
+                                    <td>
+                                        {{chamado.ordem}}
+                                    </td>
+                                    <td class="issue-info" style="width: 30%">
+                                        <a ui-sref="edit-chamado({id:chamado.id})">
+                                            #{{chamado.id}}
+                                        </a>
+                                        <small>
+                                            {{chamado.titulo}}
+                                        </small>
+                                    </td>
+                                    <td class="issue-info" style="width: 10%">
+                                        {{chamado.solicitante.firstName}}
+                                        <small>
+                                            {{chamado.responsavel.firstName}}
+                                        </small>
+                                    </td>
+                                    <td>{{chamado.criadoEm | date:'mediumDate'}}</td>
+                                    <td>
+
+                                        <i ng-if="chamado.tempoEstimado" class="fa fa-clock-o"></i>
+                                        {{chamado.tempoEstimado}}
+                                    </td>
+                                    <td>
+                                        {{chamado.modulo.descricao}}
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
