@@ -213,30 +213,58 @@ public class ChamadoService {
         return retorno;
     }
 
+    public void ajustarSituacaoChamados(){
+        List<Chamado> chamados = solicitacaoDesenvolvimentoRepository.findAllChamadosEmDesenvolvimento();
+        for (Chamado chamado : chamados) {
+            List<String> collect = chamado.getSolicitacoesDesenvolvimento()
+                .stream()
+                .map(solicitacao -> solicitacao.getSituacao())
+                .collect(Collectors.toList());
+
+//            if (!ticket.getStatusName().equals(solicitacao.getSituacao())
+//                && solicitacao.getChamado().getSituacao().equals(SituacaoChamado.AGUARDANDO_DESENVOLVIMENTO)) {
+//                chamado.setSituacao(SituacaoChamado.EM_DESENVOLVIMENTO);
+//                chamadoRepository.save(chamado);
+//            }
+//            if (chamado.getTempoEstimado() == null && ticket.getEstimatedHours() != null) {
+//                chamado.setTempoEstimado(ticket.getEstimatedHours().intValue());
+//                chamadoRepository.save(chamado);
+//            }
+        }
+    }
+
+
     @Scheduled(cron = "0/60 * * * * ?")
     public void atualizarSolicitacoesDesenvolvimento() {
-        RedmineManager menager = RedmineManagerFactory.createWithUserAuth(URI, ORTS_REDMINE_USER, ORTS_REDMINE_PASSWORD);
-        List<SolicitacaoDesenvolvimento> solitacoes = solicitacaoDesenvolvimentoRepository.findAllEmDesenvolvimento();
-        for (SolicitacaoDesenvolvimento solicitacao : solitacoes) {
-            try {
-                Issue ticket = menager.getIssueManager().getIssueById(solicitacao.getNumero());
-                Chamado chamado = solicitacao.getChamado();
-                if (!ticket.getStatusName().equals(solicitacao.getSituacao())
-                    && solicitacao.getChamado().getSituacao().equals(SituacaoChamado.AGUARDANDO_DESENVOLVIMENTO)) {
-                    chamado.setSituacao(SituacaoChamado.EM_DESENVOLVIMENTO);
-                    chamadoRepository.save(chamado);
-                }
-                if (chamado.getTempoEstimado() == null && ticket.getEstimatedHours() != null) {
-                    chamado.setTempoEstimado(ticket.getEstimatedHours().intValue());
-                    chamadoRepository.save(chamado);
-                }
-                solicitacao.setPercentualTerminado(ticket.getDoneRatio());
-                solicitacao.setSituacao(ticket.getStatusName());
-                solicitacaoDesenvolvimentoRepository.save(solicitacao);
-            } catch (Exception e) {
-                log.error("Não foi possivel integrar o chamado {} {}", solicitacao.getChamado(), e);
-            }
-        }
+//        RedmineManager menager = RedmineManagerFactory.createWithUserAuth(URI, ORTS_REDMINE_USER, ORTS_REDMINE_PASSWORD);
+//        List<SolicitacaoDesenvolvimento> solicitacoes = solicitacaoDesenvolvimentoRepository.findAllEmDesenvolvimento();
+//
+//            for (SolicitacaoDesenvolvimento solicitacao : solicitacoes) {
+//                try {
+//                    Issue ticket = menager.getIssueManager().getIssueById(solicitacao.getNumero(), Include.children);
+//
+//                    solicitacao.setPercentualTerminado(ticket.getDoneRatio());
+//                    solicitacao.setSituacao(ticket.getStatusName());
+//                    solicitacaoDesenvolvimentoRepository.save(solicitacao);
+//                    for (Issue issue : ticket.getChildren()) {
+//                        if (!tickets.contains(issue.getId())) {
+//                            issue = menager.getIssueManager().getIssueById(issue.getId());
+//                            SolicitacaoDesenvolvimento filho = new SolicitacaoDesenvolvimento();
+//                            filho.setNumero(issue.getId());
+//                            filho.setSituacao(issue.getStatusName());
+//                            filho.setChamado(chamado);
+//                            filho.setConteudo(issue.getDescription());
+//                            filho.setCriterio(solicitacao.getCriterio());
+//                            filho.setTipoSla(solicitacao.getTipoSla());
+//
+//                            solicitacaoDesenvolvimentoRepository.save(filho);
+//                        }
+//                    }
+//                } catch (Exception e) {
+//                    log.error("Não foi possivel integrar o chamado {} {}", solicitacao.getChamado(), e);
+//                }
+//            }
+//        }
 
     }
 

@@ -10,7 +10,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * A Chamado.
@@ -79,6 +81,8 @@ public class Chamado implements Serializable {
     @Column(name = "ticket_legado", nullable = false)
     private Integer ticketLegado;
 
+    @OneToMany(mappedBy = "chamado")
+    private Set<SolicitacaoDesenvolvimento> solicitacoesDesenvolvimento =  new HashSet<>();
 
     public Long getId() {
         return id;
@@ -241,6 +245,14 @@ public class Chamado implements Serializable {
 
     public void setTicketLegado(Integer ticketLegado) {
         this.ticketLegado = ticketLegado;
+    }
+
+    public Set<SolicitacaoDesenvolvimento> getSolicitacoesDesenvolvimento() {
+        return solicitacoesDesenvolvimento;
+    }
+
+    public void setSolicitacoesDesenvolvimento(Set<SolicitacaoDesenvolvimento> solicitacoesDesenvolvimento) {
+        this.solicitacoesDesenvolvimento = solicitacoesDesenvolvimento;
     }
 
     @Override

@@ -78,6 +78,8 @@
                 vm.labelsModulo.push(modulo);
                 vm.dataModulo.push(total);
             });
+
+
             angular.forEach(vm.totalPorTipo, function (total, tipo) {
                 vm.labelsTipo.push(tipo);
                 vm.dataTipo.push(total);
